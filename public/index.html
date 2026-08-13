@@ -217,6 +217,20 @@ function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",
 function renderGym(){const p=gymPlan[gymDay],d=day(gymDay);let total=0,done=0;document.getElementById("gymTitle").textContent=gymDay+" · "+p.title;document.getElementById("gymDays").innerHTML=weekdays.map(x=>{let a=day(x).attendance;return `<button class="day ${x===gymDay?"active":""} ${a||""}" onclick="selectGymDay('${x}')"><div class="n">${x}</div><div class="s">${a==="present"?"✓ Present":a==="partial"?"~ Partial":a==="absent"?"× Absent":"Not marked"}</div></button>`}).join("");document.getElementById("gymExercises").innerHTML=p.e.map((x,i)=>{let[n,t,r]=x;total+=t;let s=Array.from({length:t},(_,j)=>d.sets[i+"_"+j]||"");done+=s.filter(v=>v==="done").length;return `<div class="exercise"><div class="exname">${i+1}. ${n}</div><div class="target">${t} sets · ${r} reps</div><div class="sets">${s.map((v,j)=>`<button class="set ${v}" onclick="cycleGym(${i},${j})">${v==="done"?"✓":v==="partial"?"~":j+1}</button>`).join("")}</div><input class="notes" placeholder="Optional: actual weight / reps / notes" value="${esc(d.notes[i]||"")}" onchange="gymNote(${i},this.value)"></div>`}).join("");const pct=total?Math.round(done/total*100):0;document.getElementById("gymSets").textContent=done;document.getElementById("gymPct").textContent=pct+"%";document.getElementById("gymProgressText").textContent=done+"/"+total;document.getElementById("gymProgressBar").style.width=pct+"%";let a=0,st=0;weekdays.forEach(x=>{let q=day(x);if(["present","partial"].includes(q.attendance))a++});for(let i=weekdays.length-1;i>=0;i--){if(day(weekdays[i]).attendance==="present")st++;else break}document.getElementById("gymAtt").textContent=a+"/7";document.getElementById("gymStreak").textContent=st}
 function formatTime(t){if(!t)return"";let[h,m]=t.split(":").map(Number),amp=h>=12?"PM":"AM";h=h%12||12;return`${h}:${String(m).padStart(2,"0")} ${amp}`}
 function renderMovies(){movies.sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.showtime||"99:99").localeCompare(b.showtime||"99:99"));let nw=movies.filter(m=>m.category==="New").length,re=movies.filter(m=>m.category==="Re-release").length,total=movies.reduce((s,m)=>s+Number(m.ticket||0),0);document.getElementById("mNew").textContent=nw;document.getElementById("mRe").textContent=re;document.getElementById("mTotal").textContent=movies.length;document.getElementById("mCompleted").textContent=nw+re;document.getElementById("mExpense").textContent="₹"+total;document.getElementById("mAverage").textContent="₹"+(movies.length?Math.round(total/movies.length):0);const set=new Set(baseTheatres);movies.forEach(m=>m.theatre&&set.add(m.theatre.trim()));document.getElementById("theatre-options").innerHTML=[...set].sort().map(x=>`<option value="${esc(x)}"></option>`).join("");document.getElementById("movieBody").innerHTML=movies.map((m,i)=>`<tr><td>${i+1}</td><td><b>${esc(m.title)}</b></td><td>${m.date||""}</td><td><span class="badge ${m.category==="New"?"new":m.category==="Rewatch"?"rewatch":"rerelease"}">${m.category}</span></td><td>${esc(m.theatre||"")}</td><td>${formatTime(m.showtime)}</td><td>${esc(m.notes||"")}</td><td class="expense">₹${m.ticket||0}</td><td><button class="ghost" onclick="removeMovie(${m.id})">Remove</button></td></tr>`).join("");renderTheatres()}
+function inferTheatreType(theatre) {
+    const t = (theatre || "").toLowerCase();
+
+    if (t.includes("amb")) return "AMB";
+    if (t.includes("pvr") || t.includes("inox") || t.includes("superplex")) return "PVR INOX";
+    if (t.includes("cinepolis")) return "Cinepolis";
+    if (t.includes("gopalan")) return "Gopalan";
+
+    const singleScreenTheatres = ["manasa", "sandhya", "brundha"];
+    if (singleScreenTheatres.some(name => t.includes(name))) return "Single Screen";
+
+    return "Independent";
+}
+
 function renderTheatres() {
     let map = {};
     let typeCounts = {
@@ -292,4 +306,85 @@ function renderTheatres() {
         `;
     }).join("");
 });
+
+document.getElementById("signIn").addEventListener("click", async () => {
+    const emailValue = document.getElementById("email").value.trim();
+    const passwordValue = document.getElementById("password").value;
+    const errorBox = document.getElementById("authError");
+
+    errorBox.textContent = "";
+
+    if (!emailValue || !passwordValue) {
+        errorBox.textContent = "Enter your email and password.";
+        return;
+    }
+
+    try {
+        await signInWithEmailAndPassword(auth, emailValue, passwordValue);
+    } catch (error) {
+        console.error("Firebase login error:", error);
+        errorBox.textContent = error.code === "auth/invalid-credential"
+            ? "Incorrect email or password."
+            : (error.message || "Login failed.");
+    }
+});
+
+window.logout = () => signOut(auth);
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        document.getElementById("login").classList.remove("hidden");
+        document.getElementById("app").classList.add("hidden");
+        return;
+    }
+
+    const mail = (user.email || "").toLowerCase();
+    const gymEmail = "devilboytej5625@gmail.com";
+    const movieEmail = "unnamedboy07@gmail.com";
+
+    if (![gymEmail, movieEmail].includes(mail)) {
+        await signOut(auth);
+        document.getElementById("authError").textContent =
+            "This account is not assigned to a dashboard.";
+        return;
+    }
+
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    document.getElementById("userEmail").textContent = user.email || "";
+
+    const isGym = mail === gymEmail;
+
+    document.getElementById("gymView").classList.toggle("hidden", !isGym);
+    document.getElementById("movieView").classList.toggle("hidden", isGym);
+
+    document.getElementById("brandTitle").textContent =
+        isGym ? "FORGE" : "EPIC MOVIE TRACKER";
+    document.getElementById("brandSub").textContent =
+        isGym ? "GYM TRACKER" : "MOVIE TRACKER";
+    document.getElementById("logo").textContent = isGym ? "⚡" : "🎬";
+
+    try {
+        await cloudLoad();
+
+        // Seed the movie account from the existing 42-movie backup
+        // only when its Firestore movie document is empty.
+        if (!isGym && movies.length === 0 && typeof BACKUP_MOVIES !== "undefined") {
+            movies = BACKUP_MOVIES.map(x => ({ ...x }));
+            await setDoc(movieRef(), {
+                movies,
+                importedAt: serverTimestamp(),
+                importedFromBackup: true
+            }, { merge: true });
+        }
+
+        renderGym();
+        renderMovies();
+    } catch (error) {
+        console.error("Dashboard load error:", error);
+        renderGym();
+        renderMovies();
+    }
+});
+
 </script></body></html>

@@ -1,8 +1,15 @@
-# Unified Gym + Movie Tracker
+# Unified Gym + Movie Tracker — Login Fixed
 
-Two dashboards on one Firebase-hosted site:
+This Cloudflare-hosted build restores the Firebase Authentication click handler and session routing.
 
+Accounts:
 - devilboytej5625@gmail.com -> Gym Tracker
 - unnamedboy07@gmail.com -> Epic Movie Tracker
 
-The movie dashboard is preloaded with the 42 movies from the uploaded 12 Aug 2026 CSV backup. On the first movie-account login, when that account has no Firestore movie data, those 42 records are automatically written to Firestore.
+It also keeps:
+- Firestore cloud sync
+- 42-movie backup seed
+- AMB, PVR INOX, Cinepolis, Single Screen, Gopalan, Independent
+- theatre stats and format tags
+
+For Cloudflare Pages, deploy the contents of `public/`.
