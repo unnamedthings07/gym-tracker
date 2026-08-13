@@ -1,15 +1,10 @@
-# Unified Gym + Movie Tracker — Login Fixed
+# Unified Gym + Movie Tracker
 
-This Cloudflare-hosted build restores the Firebase Authentication click handler and session routing.
+Movie tracker enhancements:
+- Multi-select viewing format/experience tags: 2D, 3D, IMAX, 4DX, ScreenX, PXL, ICE, Onyx, Dolby Cinema, MX4D, Other.
+- Theatre type: PVR INOX, Cinepolis, Gopalan, Single Screen, Independent / Other.
+- Existing movies can be edited without re-entering them.
+- Theatres tab has provider/type stats at the top.
+- CSV export includes theatre type and formats.
 
-Accounts:
-- devilboytej5625@gmail.com -> Gym Tracker
-- unnamedboy07@gmail.com -> Epic Movie Tracker
-
-It also keeps:
-- Firestore cloud sync
-- 42-movie backup seed
-- AMB, PVR INOX, Cinepolis, Single Screen, Gopalan, Independent
-- theatre stats and format tags
-
-For Cloudflare Pages, deploy the contents of `public/`.
+The premium-format list is based on current PVR INOX portfolio terminology and recent Bengaluru cinema usage; premium formats documented by PVR INOX include IMAX, 4DX/MX4D, ScreenX, PXL, ICE and Onyx.
