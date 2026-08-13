@@ -20,6 +20,8 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 .nav{display:flex;gap:7px;margin-bottom:15px;flex-wrap:wrap}.nav button{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 13px;border-radius:10px}.nav button.active{background:var(--a);color:#fff;border-color:var(--a)}
 .toast{position:fixed;right:17px;bottom:17px;background:#171c26;border:1px solid var(--line);padding:11px 14px;border-radius:10px}
 @media(max-width:850px){.grid{grid-template-columns:1fr 1fr}.movieForm{grid-template-columns:1fr 1fr}}@media(max-width:600px){.wrap{padding:15px 11px}.user span{display:none}.grid{grid-template-columns:1fr 1fr}.movieForm{grid-template-columns:1fr}}
+@media(max-width:900px){#theatreStats{grid-template-columns:repeat(3,minmax(100px,1fr)) !important}}
+@media(max-width:600px){#theatreStats{grid-template-columns:repeat(2,minmax(100px,1fr)) !important}}
 </style></head><body>
 
 <section id="login" class="auth"><div class="authbox"><div class="logo">⚡</div><h1>My Tracker</h1><p>One website. Two private dashboards.</p>
@@ -49,7 +51,12 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 <form class="movieForm" id="movieForm"><input id="title" placeholder="Movie title" required><input id="date" type="date" required><select id="category"><option>New</option><option>Rewatch</option><option>Re-release</option></select><input id="theatre" list="theatre-options" placeholder="Theatre" required><datalist id="theatre-options"></datalist><input id="showtime" type="time"><input id="notes" placeholder="Notes / thoughts"><input id="ticket" type="number" placeholder="Total expense"><button>Add to tracker</button></form></div>
 <div class="card"><div class="cardhead"><div><h2>Movies</h2><p>Sorted by date and showtime.</p></div></div><div class="tableWrap"><table><thead><tr><th>No.</th><th>Movie</th><th>Date</th><th>Category</th><th>Theatre</th><th>Showtime</th><th>Notes</th><th>Expense</th><th></th></tr></thead><tbody id="movieBody"></tbody></table></div></div>
 </div>
-<div id="movieTheatresPage" class="hidden"><div class="card"><div class="cardhead"><div><h2>Theatres I've Been To</h2><p id="theatreSummary"></p></div></div><div id="theatreGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div></div></div>
+<div id="movieTheatresPage" class="hidden">
+<div class="card"><div class="cardhead"><div><h2>Theatres I've Been To</h2><p id="theatreSummary"></p></div></div>
+<div id="theatreStats" style="display:grid;grid-template-columns:repeat(6,minmax(100px,1fr));gap:8px;margin-top:12px"></div>
+</div>
+<div id="theatreGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
+</div>
 </div></main><div id="toast" class="toast hidden"></div>
 
 <script type="module">
@@ -307,6 +314,20 @@ function renderTheatres() {
     }).join("");
 }
 
+window.showMoviePage = function(page) {
+    const tracker = document.getElementById("movieTrackerPage");
+    const theatres = document.getElementById("movieTheatresPage");
+    const movieTab = document.getElementById("movieTab");
+    const theatreTab = document.getElementById("theatreTab");
+
+    tracker.classList.toggle("hidden", page !== "tracker");
+    theatres.classList.toggle("hidden", page !== "theatres");
+    movieTab.classList.toggle("active", page === "tracker");
+    theatreTab.classList.toggle("active", page === "theatres");
+
+    if (page === "theatres") renderTheatres();
+};
+
 document.getElementById("signIn").addEventListener("click", async () => {
     const emailValue = document.getElementById("email").value.trim();
     const passwordValue = document.getElementById("password").value;
@@ -384,6 +405,15 @@ onAuthStateChanged(auth, async (user) => {
         console.error("Dashboard load error:", error);
         renderGym();
         renderMovies();
+    }
+});
+
+window.addEventListener("error", (event) => {
+    console.error(event.error || event.message);
+    const box = document.getElementById("authError");
+    if (box && !document.getElementById("app").classList.contains("hidden")) {
+        const t = document.getElementById("toast");
+        if (t) { t.textContent = "A page error occurred. Open browser console for details."; t.classList.remove("hidden"); }
     }
 });
 
