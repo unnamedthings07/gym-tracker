@@ -20,6 +20,29 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 .nav{display:flex;gap:7px;margin-bottom:15px;flex-wrap:wrap}.nav button{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 13px;border-radius:10px}.nav button.active{background:var(--a);color:#fff;border-color:var(--a)}
 .toast{position:fixed;right:17px;bottom:17px;background:#171c26;border:1px solid var(--line);padding:11px 14px;border-radius:10px}
 @media(max-width:850px){.grid{grid-template-columns:1fr 1fr}.movieForm{grid-template-columns:1fr 1fr}}@media(max-width:600px){.wrap{padding:15px 11px}.user span{display:none}.grid{grid-template-columns:1fr 1fr}.movieForm{grid-template-columns:1fr}}
+
+.movieForm{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.movieForm input,.movieForm select{padding:10px;border:1px solid var(--line);background:#0b0e14;color:var(--text);border-radius:9px}
+.movieForm button{grid-column:1/-1;padding:11px;background:var(--a);color:#fff;border:0;border-radius:9px;font-weight:800}
+.tagField{grid-column:1/-1;padding:12px;border:1px solid var(--line);border-radius:10px;background:#0b0e14}
+.tagLabel{font-size:11px;color:var(--muted);margin-bottom:8px;display:block}
+.tagChoices{display:flex;gap:7px;flex-wrap:wrap}
+.tagChoice input{display:none}
+.tagChoice label{display:inline-block;padding:7px 10px;border:1px solid #364052;border-radius:999px;color:var(--muted);cursor:pointer;font-size:11px;background:#11151d}
+.tagChoice input:checked+label{border-color:var(--a);background:#7c5cff18;color:#fff}
+.miniTag,.typeTag{display:inline-block;padding:3px 7px;border-radius:999px;font-size:10px;margin:2px 3px 0 0;border:1px solid #384255;color:#b8c0ce;background:#11151d}
+.typeTag{border-color:#7c5cff66;color:#c9bfff;background:#7c5cff12}
+.editBtn{color:#c9bfff!important}
+.modalBackdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:100}
+.modalBackdrop.show{display:flex}
+.modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#11151d;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 25px 80px #000b}
+.modalHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+.modalGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modalGrid input,.modalGrid select{width:100%;padding:10px;border:1px solid var(--line);background:#0b0e14;color:var(--text);border-radius:9px}
+.modalActions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+@media(max-width:850px){.movieForm{grid-template-columns:1fr 1fr}.modalGrid{grid-template-columns:1fr}}
+@media(max-width:600px){.movieForm{grid-template-columns:1fr}}
+
 @media(max-width:900px){#theatreStats{grid-template-columns:repeat(3,minmax(100px,1fr)) !important}}
 @media(max-width:600px){#theatreStats{grid-template-columns:repeat(2,minmax(100px,1fr)) !important}}
 </style></head><body>
@@ -48,8 +71,31 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 <section class="grid"><div class="card stat"><span>Target completed</span><b id="mCompleted">0</b></div><div class="card stat"><span>New movies</span><b id="mNew">0</b></div><div class="card stat"><span>Re-released</span><b id="mRe">0</b></div><div class="card stat"><span>Total movies</span><b id="mTotal">0</b></div></section>
 <section class="grid"><div class="card stat"><span>Total expenses</span><b id="mExpense">₹0</b></div><div class="card stat"><span>Average / movie</span><b id="mAverage">₹0</b></div></section>
 <div class="card"><div class="cardhead"><div><h2>Add a Movie</h2><p>Movies are saved to your cloud account.</p></div><button class="ghost" onclick="exportCSV()">📥 CSV</button></div>
-<form class="movieForm" id="movieForm"><input id="title" placeholder="Movie title" required><input id="date" type="date" required><select id="category"><option>New</option><option>Rewatch</option><option>Re-release</option></select><input id="theatre" list="theatre-options" placeholder="Theatre" required><datalist id="theatre-options"></datalist><input id="showtime" type="time"><input id="notes" placeholder="Notes / thoughts"><input id="ticket" type="number" placeholder="Total expense"><button>Add to tracker</button></form></div>
-<div class="card"><div class="cardhead"><div><h2>Movies</h2><p>Sorted by date and showtime.</p></div></div><div class="tableWrap"><table><thead><tr><th>No.</th><th>Movie</th><th>Date</th><th>Category</th><th>Theatre</th><th>Showtime</th><th>Notes</th><th>Expense</th><th></th></tr></thead><tbody id="movieBody"></tbody></table></div></div>
+<form class="movieForm" id="movieForm">
+<input id="title" placeholder="Movie title" required>
+<input id="date" type="date" required>
+<select id="category"><option>New</option><option>Rewatch</option><option>Re-release</option></select>
+<input id="theatre" list="theatre-options" placeholder="Theatre" required>
+<datalist id="theatre-options"></datalist>
+<select id="theatreType">
+<option value="">Auto-detect theatre chain</option>
+<option>AMB</option>
+<option>PVR INOX</option>
+<option>Cinepolis</option>
+<option>Single Screen</option>
+<option>Gopalan</option>
+<option>Independent</option>
+</select>
+<input id="showtime" type="time">
+<input id="notes" placeholder="Notes / thoughts">
+<input id="ticket" type="number" placeholder="Total expense">
+<div class="tagField">
+<span class="tagLabel">Format / experience tags — select all that apply</span>
+<div class="tagChoices" id="addFormatTags"></div>
+</div>
+<button type="submit" id="addMovieBtn">Add to tracker</button>
+</form></div>
+<div class="card"><div class="cardhead"><div><h2>Movies</h2><p>Sorted by date and showtime.</p></div></div><div class="tableWrap"><table><thead><tr><th>No.</th><th>Movie</th><th>Date</th><th>Category</th><th>Theatre</th><th>Showtime</th><th>Notes</th><th>Format / Experience</th><th>Expense</th><th></th></tr></thead><tbody id="movieBody"></tbody></table></div></div>
 </div>
 <div id="movieTheatresPage" class="hidden">
 <div class="card"><div class="cardhead"><div><h2>Theatres I've Been To</h2><p id="theatreSummary"></p></div></div>
@@ -57,7 +103,35 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 </div>
 <div id="theatreGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
 </div>
-</div></main><div id="toast" class="toast hidden"></div>
+</div></main>
+<div id="editMovieModal" class="modalBackdrop">
+  <div class="modal">
+    <div class="modalHead">
+      <div><h2 style="margin:0">Edit Movie Tags</h2><p style="margin:4px 0;color:var(--muted);font-size:12px">Change theatre chain and format tags without re-entering the movie.</p></div>
+      <button class="ghost" type="button" onclick="closeEditMovie()">✕</button>
+    </div>
+    <div class="modalGrid">
+      <div><label class="tagLabel">Movie</label><input id="editTitle" disabled></div>
+      <div><label class="tagLabel">Theatre</label><input id="editTheatre" disabled></div>
+      <div><label class="tagLabel">Theatre chain / type</label>
+        <select id="editTheatreType">
+          <option>AMB</option><option>PVR INOX</option><option>Cinepolis</option><option>Single Screen</option><option>Gopalan</option><option>Independent</option>
+        </select>
+      </div>
+      <div><label class="tagLabel">Date</label><input id="editDate" disabled></div>
+    </div>
+    <div class="tagField" style="margin-top:10px">
+      <span class="tagLabel">Format / experience tags</span>
+      <div class="tagChoices" id="editFormatTags"></div>
+    </div>
+    <div class="modalActions">
+      <button class="ghost" type="button" onclick="closeEditMovie()">Cancel</button>
+      <button class="primary" type="button" onclick="saveEditedMovie()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
@@ -67,6 +141,11 @@ import {firebaseConfig} from "./firebase-config.js";
 
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const GYM_EMAIL="devilboytej5625@gmail.com",MOVIE_EMAIL="unnamedboy07@gmail.com";
+
+const FORMAT_OPTIONS=["2D","3D","IMAX","4DX","ScreenX","PXL","ICE","Onyx","Dolby Cinema","MX4D"];
+const THEATRE_TYPES=["AMB","PVR INOX","Cinepolis","Single Screen","Gopalan","Independent"];
+let editingMovieId=null;
+
 const BACKUP_MOVIES=[{"id":1,"title":"DACOIT (TELUGU) (UA 13+)","date":"2026-04-14","category":"New","theatre":"M5 Ecity Mall","showtime":"12:55","notes":"","ticket":240},{"id":2,"title":"Darling (2010)","date":"2026-04-23","category":"Re-release","theatre":"Brundha RGB Laser 4K","showtime":"10:15","notes":"","ticket":224},{"id":3,"title":"LEE CRONINS THE MUMMY","date":"2026-04-24","category":"New","theatre":"M5 Ecity Mall","showtime":"12:40","notes":"","ticket":250},{"id":4,"title":"KD","date":"2026-05-01","category":"New","theatre":"Manasa RGB Laser ATMOS","showtime":"10:00","notes":"","ticket":241},{"id":5,"title":"Kara","date":"2026-05-01","category":"New","theatre":"Manasa RGB Laser ATMOS","showtime":"13:00","notes":"","ticket":321},{"id":6,"title":"KD","date":"2026-05-06","category":"Rewatch","theatre":"Manasa RGB Laser ATMOS","showtime":"13:15","notes":"","ticket":224},{"id":7,"title":"Krishnavataram Part 1","date":"2026-05-09","category":"New","theatre":"Cinepolis Lulu Mall","showtime":"10:00","notes":"","ticket":238},{"id":8,"title":"KRISHNAVATARAM (HINDI)","date":"2026-05-13","category":"Rewatch","theatre":"PVR Superplex Forum Mall","showtime":"13:10","notes":"","ticket":190},{"id":9,"title":"Karuppu","date":"2026-05-18","category":"New","theatre":"Sandhya Cinema","showtime":"13:00","notes":"","ticket":224},{"id":10,"title":"AAKHRI SAWAL (HINDI)","date":"2026-05-20","category":"New","theatre":"PVR Cinemas, Global Mall","showtime":"13:30","notes":"","ticket":160},{"id":11,"title":"DRISHYAM 3","date":"2026-05-21","category":"New","theatre":"PVR Superplex Forum Mall","showtime":"08:00","notes":"","ticket":316},{"id":12,"title":"Karuppu","date":"2026-05-23","category":"Rewatch","theatre":"Manasa RGB Laser ATMOS","showtime":"13:00","notes":"","ticket":200},{"id":13,"title":"Krishnavataram Part 1 (telugu)","date":"2026-05-24","category":"Rewatch","theatre":"AMB Cinemas Kapali","showtime":"19:25","notes":"","ticket":250},{"id":14,"title":"Kattalan","date":"2026-05-28","category":"New","theatre":"Sandhya Cinema","showtime":"10:00","notes":"","ticket":156},{"id":15,"title":"Blast","date":"2026-05-28","category":"New","theatre":"Manasa RGB Laser ATMOS","showtime":"13:00","notes":"","ticket":165},{"id":16,"title":"1 Nenokkadine","date":"2026-05-31","category":"Re-release","theatre":"AMB Cinemas Kapali","showtime":"12:55","notes":"","ticket":287},{"id":17,"title":"Obsession","date":"2026-06-01","category":"New","theatre":"PVR Superplex Forum Mall","showtime":"12:10","notes":"","ticket":149},{"id":18,"title":"Peddi","date":"2026-06-05","category":"New","theatre":"Manasa RGB Laser ATMOS","showtime":"11:30","notes":"","ticket":236},{"id":19,"title":"Obsession","date":"2026-06-06","category":"Rewatch","theatre":"INOX mantri","showtime":"12:25","notes":"","ticket":222},{"id":20,"title":"Governer","date":"2026-06-13","category":"New","theatre":"PVR Vega City","showtime":"12:00","notes":"","ticket":222},{"id":21,"title":"Disclosure Day","date":"2026-06-14","category":"New","theatre":"AMB Cinemas Kapali","showtime":"10:15","notes":"Dolby Cinema","ticket":492},{"id":22,"title":"Backrooms","date":"2026-06-15","category":"New","theatre":"PVR Cinemas, Global Mall","showtime":"13:55","notes":"4DX","ticket":302},{"id":23,"title":"Project Hail Mary","date":"2026-06-17","category":"New","theatre":"PVR Nexus Koramangala","showtime":"10:30","notes":"","ticket":181},{"id":24,"title":"Bandar","date":"2026-06-17","category":"New","theatre":"PVR Nexus Koramangala","showtime":"14:10","notes":"","ticket":197},{"id":25,"title":"Colony","date":"2026-06-19","category":"New","theatre":"PVR Superplex Forum Mall","showtime":"09:40","notes":"4DX","ticket":402},{"id":26,"title":"Maa Inti Bangaram","date":"2026-06-19","category":"New","theatre":"Manasa RGB Laser ATMOS","showtime":"13:20","notes":"","ticket":200},{"id":27,"title":"Balan:The boy","date":"2026-06-20","category":"New","theatre":"PVR Superplex Forum Mall","showtime":"10:40","notes":"","ticket":204},{"id":28,"title":"Colony","date":"2026-06-24","category":"Rewatch","theatre":"PVR Nexus Koramangala","showtime":"12:05","notes":"","ticket":23},{"id":29,"title":"Uyir","date":"2026-06-26","category":"New","theatre":"M5 Ecity Mall","showtime":"12:55","notes":"","ticket":230},{"id":30,"title":"okkadu","date":"2026-06-29","category":"Re-release","theatre":"AMB Cinemas Kapali","showtime":"11:40","notes":"","ticket":150},{"id":31,"title":"Nagabandhanam","date":"2026-07-03","category":"New","theatre":"AMB Cinemas Kapali","showtime":"09:50","notes":"Dolby Cinema","ticket":450},{"id":32,"title":"Rao Bahudur","date":"2026-07-03","category":"New","theatre":"AMB Cinemas Kapali","showtime":"13:10","notes":"","ticket":300},{"id":33,"title":"Raktha Charitra","date":"2026-07-18","category":"Re-release","theatre":"AMB Cinemas Kapali","showtime":"13:25","notes":"","ticket":200},{"id":34,"title":"Evil Dead Burn","date":"2026-07-21","category":"New","theatre":"PVR Orion Mall Dr Rajkumar Road","showtime":"09:45","notes":"ATMOS","ticket":178},{"id":35,"title":"Lenin","date":"2026-07-21","category":"New","theatre":"PVR Orion Mall Dr Rajkumar Road","showtime":"12:30","notes":"","ticket":178},{"id":36,"title":"The Odyssey","date":"2026-07-22","category":"New","theatre":"PVR Nexus Koramangala","showtime":"08:30","notes":"IMAX","ticket":1240},{"id":37,"title":"Jana Nayagan","date":"2026-07-23","category":"New","theatre":"Sandhya Cinema","showtime":"09:15","notes":"","ticket":500},{"id":38,"title":"Karavali","date":"2026-07-24","category":"New","theatre":"PVR Orion Mall Dr Rajkumar Road","showtime":"10:40","notes":"","ticket":176},{"id":39,"title":"Idhayam Murali","date":"2026-07-28","category":"New","theatre":"PVR Vega City","showtime":"12:10","notes":"","ticket":167},{"id":40,"title":"Chennai Love Story","date":"2026-07-29","category":"New","theatre":"PVR GT World Mall","showtime":"10:40","notes":"","ticket":168},{"id":41,"title":"Spider-Man: Brand New Day","date":"2026-07-30","category":"New","theatre":"Victory Cinema","showtime":"13:15","notes":"","ticket":247},{"id":42,"title":"Newtons Third Law","date":"2026-07-31","category":"New","theatre":"PVR Superplex Forum Mall","showtime":"13:45","notes":"","ticket":190}];
 const gymPlan={Monday:{title:"Push · Chest, Shoulders & Triceps",e:[["Chest Press",3,"10–12"],["Incline Chest Press",3,"10–12"],["Pec Deck / Chest Fly",2,"12–15"],["Shoulder Press",3,"10–12"],["Lateral Raise",3,"12–15"],["Tricep Pushdown",3,"10–15"],["Overhead Tricep Extension",2,"10–15"]]},Tuesday:{title:"Pull · Back & Biceps",e:[["Lat Pulldown",3,"10–12"],["Seated Cable Row",3,"10–12"],["Chest-Supported Row",2,"10–12"],["Face Pull",2,"12–15"],["Dumbbell Bicep Curl",3,"10–12"],["Hammer Curl",2,"10–12"]]},Wednesday:{title:"Legs · Quads, Hamstrings & Core",e:[["Leg Press",3,"10–12"],["Leg Extension",3,"10–15"],["Leg Curl",3,"10–15"],["Calf Raise",3,"12–15"],["Plank",3,"30–45 sec"],["Cable Crunch",2,"12–15"]]},Sunday:{title:"Recovery · Light Cardio & Mobility",e:[["Treadmill Walking",1,"20–30 min"],["Cycling / Elliptical",1,"15–20 min"],["Stretching / Mobility",1,"10–15 min"]]}};
 gymPlan.Thursday=gymPlan.Monday;gymPlan.Friday=gymPlan.Tuesday;gymPlan.Saturday=gymPlan.Wednesday;
@@ -223,7 +302,62 @@ function toast(x){const t=document.getElementById("toast");t.textContent=x;t.cla
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function renderGym(){const p=gymPlan[gymDay],d=day(gymDay);let total=0,done=0;document.getElementById("gymTitle").textContent=gymDay+" · "+p.title;document.getElementById("gymDays").innerHTML=weekdays.map(x=>{let a=day(x).attendance;return `<button class="day ${x===gymDay?"active":""} ${a||""}" onclick="selectGymDay('${x}')"><div class="n">${x}</div><div class="s">${a==="present"?"✓ Present":a==="partial"?"~ Partial":a==="absent"?"× Absent":"Not marked"}</div></button>`}).join("");document.getElementById("gymExercises").innerHTML=p.e.map((x,i)=>{let[n,t,r]=x;total+=t;let s=Array.from({length:t},(_,j)=>d.sets[i+"_"+j]||"");done+=s.filter(v=>v==="done").length;return `<div class="exercise"><div class="exname">${i+1}. ${n}</div><div class="target">${t} sets · ${r} reps</div><div class="sets">${s.map((v,j)=>`<button class="set ${v}" onclick="cycleGym(${i},${j})">${v==="done"?"✓":v==="partial"?"~":j+1}</button>`).join("")}</div><input class="notes" placeholder="Optional: actual weight / reps / notes" value="${esc(d.notes[i]||"")}" onchange="gymNote(${i},this.value)"></div>`}).join("");const pct=total?Math.round(done/total*100):0;document.getElementById("gymSets").textContent=done;document.getElementById("gymPct").textContent=pct+"%";document.getElementById("gymProgressText").textContent=done+"/"+total;document.getElementById("gymProgressBar").style.width=pct+"%";let a=0,st=0;weekdays.forEach(x=>{let q=day(x);if(["present","partial"].includes(q.attendance))a++});for(let i=weekdays.length-1;i>=0;i--){if(day(weekdays[i]).attendance==="present")st++;else break}document.getElementById("gymAtt").textContent=a+"/7";document.getElementById("gymStreak").textContent=st}
 function formatTime(t){if(!t)return"";let[h,m]=t.split(":").map(Number),amp=h>=12?"PM":"AM";h=h%12||12;return`${h}:${String(m).padStart(2,"0")} ${amp}`}
-function renderMovies(){movies.sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.showtime||"99:99").localeCompare(b.showtime||"99:99"));let nw=movies.filter(m=>m.category==="New").length,re=movies.filter(m=>m.category==="Re-release").length,total=movies.reduce((s,m)=>s+Number(m.ticket||0),0);document.getElementById("mNew").textContent=nw;document.getElementById("mRe").textContent=re;document.getElementById("mTotal").textContent=movies.length;document.getElementById("mCompleted").textContent=nw+re;document.getElementById("mExpense").textContent="₹"+total;document.getElementById("mAverage").textContent="₹"+(movies.length?Math.round(total/movies.length):0);const set=new Set(baseTheatres);movies.forEach(m=>m.theatre&&set.add(m.theatre.trim()));document.getElementById("theatre-options").innerHTML=[...set].sort().map(x=>`<option value="${esc(x)}"></option>`).join("");document.getElementById("movieBody").innerHTML=movies.map((m,i)=>`<tr><td>${i+1}</td><td><b>${esc(m.title)}</b></td><td>${m.date||""}</td><td><span class="badge ${m.category==="New"?"new":m.category==="Rewatch"?"rewatch":"rerelease"}">${m.category}</span></td><td>${esc(m.theatre||"")}</td><td>${formatTime(m.showtime)}</td><td>${esc(m.notes||"")}</td><td class="expense">₹${m.ticket||0}</td><td><button class="ghost" onclick="removeMovie(${m.id})">Remove</button></td></tr>`).join("");renderTheatres()}
+
+function inferTheatreType(theatre){
+  const t=(theatre||"").toLowerCase();
+  if(t.includes("amb")) return "AMB";
+  if(t.includes("pvr")||t.includes("inox")||t.includes("superplex")) return "PVR INOX";
+  if(t.includes("cinepolis")) return "Cinepolis";
+  if(t.includes("gopalan")) return "Gopalan";
+  if(["manasa","sandhya","brundha","victory"].some(x=>t.includes(x))) return "Single Screen";
+  return "Independent";
+}
+function getSelectedFormats(containerId){
+  return Array.from(document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`)).map(x=>x.value);
+}
+function renderFormatChoices(containerId, selected=[]){
+  const box=document.getElementById(containerId);
+  if(!box) return;
+  box.innerHTML=FORMAT_OPTIONS.map(f=>{
+    const checked=selected.includes(f)?"checked":"";
+    return `<div class="tagChoice"><input type="checkbox" id="${containerId}-${f.replace(/[^a-z0-9]/gi,"_")}" value="${esc(f)}" ${checked}><label for="${containerId}-${f.replace(/[^a-z0-9]/gi,"_")}">${esc(f)}</label></div>`;
+  }).join("");
+}
+
+function renderMovies(){
+  movies.sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.showtime||"99:99").localeCompare(b.showtime||"99:99"));
+  let nw=movies.filter(m=>m.category==="New").length,
+      re=movies.filter(m=>m.category==="Re-release").length,
+      total=movies.reduce((s,m)=>s+Number(m.ticket||0),0);
+  document.getElementById("mNew").textContent=nw;
+  document.getElementById("mRe").textContent=re;
+  document.getElementById("mTotal").textContent=movies.length;
+  document.getElementById("mCompleted").textContent=nw+re;
+  document.getElementById("mExpense").textContent="₹"+total;
+  document.getElementById("mAverage").textContent="₹"+(movies.length?Math.round(total/movies.length):0);
+
+  const set=new Set(baseTheatres);
+  movies.forEach(m=>m.theatre&&set.add(m.theatre.trim()));
+  document.getElementById("theatre-options").innerHTML=[...set].sort().map(x=>`<option value="${esc(x)}"></option>`).join("");
+
+  document.getElementById("movieBody").innerHTML=movies.map((m,i)=>{
+    const type=m.theatreType||inferTheatreType(m.theatre);
+    const formats=m.formats||[];
+    return `<tr>
+      <td>${i+1}</td>
+      <td><b>${esc(m.title)}</b></td>
+      <td>${m.date||""}</td>
+      <td><span class="badge ${m.category==="New"?"new":m.category==="Rewatch"?"rewatch":"rerelease"}">${m.category}</span></td>
+      <td>${esc(m.theatre||"")}<div><span class="typeTag">${esc(type)}</span></div></td>
+      <td>${formatTime(m.showtime)}</td>
+      <td>${esc(m.notes||"")}</td>
+      <td>${formats.length?formats.map(f=>`<span class="miniTag">${esc(f)}</span>`).join(""):"—"}</td>
+      <td class="expense">₹${m.ticket||0}</td>
+      <td style="white-space:nowrap"><button class="ghost editBtn" onclick="editMovie(${m.id})">Edit</button> <button class="ghost" onclick="removeMovie(${m.id})">Remove</button></td>
+    </tr>`;
+  }).join("");
+  renderTheatres();
+}
 function inferTheatreType(theatre) {
     const t = (theatre || "").toLowerCase();
 
@@ -327,6 +461,78 @@ window.showMoviePage = function(page) {
 
     if (page === "theatres") renderTheatres();
 };
+
+
+renderFormatChoices("addFormatTags",[]);
+
+document.getElementById("movieForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const theatreValue=document.getElementById("theatre").value.trim();
+  const typeValue=document.getElementById("theatreType").value || inferTheatreType(theatreValue);
+  const newMovie={
+    id:Date.now(),
+    title:document.getElementById("title").value.trim(),
+    date:document.getElementById("date").value,
+    category:document.getElementById("category").value,
+    theatre:theatreValue,
+    theatreType:typeValue,
+    formats:getSelectedFormats("addFormatTags"),
+    showtime:document.getElementById("showtime").value,
+    notes:document.getElementById("notes").value.trim(),
+    ticket:document.getElementById("ticket").value
+  };
+  movies.push(newMovie);
+  document.getElementById("movieForm").reset();
+  document.getElementById("theatreType").value="";
+  renderFormatChoices("addFormatTags",[]);
+  renderMovies();
+  saveMovies();
+});
+
+window.editMovie=id=>{
+  const m=movies.find(x=>x.id===id);
+  if(!m) return;
+  editingMovieId=id;
+  document.getElementById("editTitle").value=m.title||"";
+  document.getElementById("editTheatre").value=m.theatre||"";
+  document.getElementById("editDate").value=m.date||"";
+  document.getElementById("editTheatreType").value=m.theatreType||inferTheatreType(m.theatre);
+  renderFormatChoices("editFormatTags",m.formats||[]);
+  document.getElementById("editMovieModal").classList.add("show");
+};
+
+window.closeEditMovie=()=>{
+  editingMovieId=null;
+  document.getElementById("editMovieModal").classList.remove("show");
+};
+
+window.saveEditedMovie=()=>{
+  const m=movies.find(x=>x.id===editingMovieId);
+  if(!m) return;
+  m.theatreType=document.getElementById("editTheatreType").value;
+  m.formats=getSelectedFormats("editFormatTags");
+  renderMovies();
+  saveMovies();
+  closeEditMovie();
+  toast("Movie tags saved ✓");
+};
+
+
+window.exportCSV=()=>{
+  let csv="No,Movie,Date,Category,Theatre,Theatre Type,Format / Experience,Showtime,Notes,Expense\n";
+  movies.forEach((m,i)=>{
+    const type=m.theatreType||inferTheatreType(m.theatre);
+    const formats=(m.formats||[]).join(" | ");
+    const q=s=>`"${String(s??"").replaceAll('"','""')}"`;
+    csv+=[i+1,q(m.title),m.date||"",m.category||"",q(m.theatre),q(type),q(formats),m.showtime||"",q(m.notes),m.ticket||0].join(",")+"\n";
+  });
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="epic_movie_tracker.csv";
+  a.click();
+};
+
 
 document.getElementById("signIn").addEventListener("click", async () => {
     const emailValue = document.getElementById("email").value.trim();
