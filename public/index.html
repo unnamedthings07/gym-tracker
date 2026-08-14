@@ -268,6 +268,18 @@ async function cloudLoad(){
       const m=await getDoc(movieRef());
       movies=m.exists()?(m.data().movies||[]):[];
       gymData={days:{}};
+
+      // Always publish the current private movie list to the read-only public snapshot.
+      // This fixes the case where the private movie data already existed before
+      // publicMovies/tracker was introduced.
+      if(m.exists()){
+        const publicPayload={
+          movies: movies.map(normalizeMovie),
+          updatedAt: serverTimestamp(),
+          source: "movie-account"
+        };
+        await setDoc(publicMovieRef(), publicPayload, {merge:true});
+      }
     }
     return true;
   }catch(err){
