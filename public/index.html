@@ -287,7 +287,7 @@ function renderMovies(){
       <td>${formatTime(m.showtime)}</td>
       <td>${ft?esc(ft):""}${m.notes?`<div style="color:#96a0af;font-size:11px;margin-top:3px">${esc(m.notes)}</div>`:""}</td>
       <td class="expense">₹${m.ticket||0}</td>
-      <td><div style="display:flex;gap:5px"><button class="actionBtn" onclick="openEdit(${m.id})">Edit</button><button class="actionBtn" onclick="removeMovie(${m.id})">Remove</button></div></td>
+      <td><div style="display:flex;gap:5px"><button class="actionBtn" onclick="openEditByIndex(${i})">Edit</button><button class="actionBtn" onclick="removeMovie(${m.id})">Remove</button></div></td>
     </tr>`;
   }).join("");
   renderTheatres();
@@ -312,34 +312,41 @@ function renderTheatres(){
     </div>`).join("")}
   </div>`).join("");
 }
-function openEdit(id){
-  const m=movies.find(x=>String(x.id)===String(id)); if(!m) return;
-  editingMovieId=id; m=normalizeMovie(m);
-  document.getElementById("editTitle").value=m.title||"";
-  document.getElementById("editDate").value=m.date||"";
-  document.getElementById("editCategory").value=m.category||"New";
-  document.getElementById("editTheatre").value=m.theatre||"";
-  document.getElementById("editShowtime").value=m.showtime||"";
-  document.getElementById("editTicket").value=m.ticket||0;
-  document.getElementById("editTheatreType").value=m.theatreType||inferTheatreType(m.theatre);
-  document.getElementById("editNotes").value=m.notes||"";
-  document.getElementById("editFormats").innerHTML=FORMAT_OPTIONS.map(f=>`<label class="tagcheck"><input type="checkbox" value="${esc(f)}" ${m.formats.includes(f)?"checked":""}>${esc(f)}</label>`).join("");
+function openEditByIndex(index){
+  if(!Number.isInteger(index) || !movies[index]){ toast("Movie not found"); return; }
+  const m=normalizeMovie(movies[index]);
+  editingMovieId=m.id;
+  document.getElementById("editTitle").value=m.title ?? "";
+  document.getElementById("editDate").value=m.date ?? "";
+  document.getElementById("editCategory").value=m.category ?? "New";
+  document.getElementById("editTheatre").value=m.theatre ?? "";
+  document.getElementById("editShowtime").value=m.showtime ?? "";
+  document.getElementById("editTicket").value=m.ticket ?? "";
+  document.getElementById("editTheatreType").value=THEATRE_TYPES.includes(m.theatreType) ? m.theatreType : inferTheatreType(m.theatre);
+  document.getElementById("editNotes").value=m.notes ?? "";
+  const selected=new Set(Array.isArray(m.formats)?m.formats:[]);
+  document.getElementById("editFormats").innerHTML=FORMAT_OPTIONS.map(f=>
+    `<label class="tagcheck"><input type="checkbox" value="${esc(f)}" ${selected.has(f)?"checked":""}>${esc(f)}</label>`
+  ).join("");
   document.getElementById("editModal").classList.add("show");
 }
-window.openEdit=openEdit;
+window.openEditByIndex=openEditByIndex;
 window.closeEdit=()=>{editingMovieId=null;document.getElementById("editModal").classList.remove("show")};
 window.saveEdit=async()=>{
-  const m=movies.find(x=>String(x.id)===String(editingMovieId)); if(!m)return;
+  const m=movies.find(x=>String(x.id)===String(editingMovieId));
+  if(!m){toast("Movie not found");closeEdit();return;}
   m.title=document.getElementById("editTitle").value.trim();
   m.date=document.getElementById("editDate").value;
   m.category=document.getElementById("editCategory").value;
   m.theatre=document.getElementById("editTheatre").value.trim();
   m.showtime=document.getElementById("editShowtime").value;
-  m.ticket=document.getElementById("editTicket").value;
+  m.ticket=Number(document.getElementById("editTicket").value||0);
   m.notes=document.getElementById("editNotes").value;
   m.theatreType=document.getElementById("editTheatreType").value;
-  m.formats=[...document.querySelectorAll("#editFormats input:checked")].map(x=>x.value);
-  closeEdit(); renderMovies(); saveMovies();
+  m.formats=[...document.querySelectorAll("#editFormats input[type=checkbox]:checked")].map(x=>x.value);
+  renderMovies();
+  closeEdit();
+  saveMovies();
 };
 window.selectGymDay=d=>{gymDay=d;renderGym()};window.cycleGym=(i,j)=>{let d=day(gymDay),k=i+"_"+j,v=d.sets[k]||"";d.sets[k]=v===""?"done":v==="done"?"partial":"";renderGym();saveGym()};window.gymNote=(i,v)=>{day(gymDay).notes[i]=v;saveGym()};window.setGymAttendance=a=>{day(gymDay).attendance=a;renderGym();saveGym()};window.removeMovie=id=>{movies=movies.filter(m=>m.id!==id);renderMovies();saveMovies()};window.showMoviePage=p=>{document.getElementById("movieTrackerPage").classList.toggle("hidden",p!=="tracker");document.getElementById("movieTheatresPage").classList.toggle("hidden",p!=="theatres");document.getElementById("movieTab").classList.toggle("active",p==="tracker");document.getElementById("theatreTab").classList.toggle("active",p==="theatres")};window.exportCSV=()=>{let csv="No,Movie,Date,Category,Theatre,Showtime,Notes,Expense\n";movies.forEach((m,i)=>csv+=[i+1,`"${(m.title||"").replaceAll('"','""')}"`,m.date||"",m.category||"",`"${(m.theatre||"").replaceAll('"','""')}"`,m.showtime||"",`"${(m.notes||"").replaceAll('"','""')}"`,m.ticket||0].join(",")+"\n");let b=new Blob([csv],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="epic_movie_tracker.csv";a.click()};
 
