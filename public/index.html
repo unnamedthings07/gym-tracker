@@ -55,6 +55,21 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 .inline-format-box input{width:auto!important;min-width:0!important}
 @media(max-width:900px){.inline-grid{min-width:560px}}
 </style>
+
+<style>
+.theatre-topstats{display:grid;grid-template-columns:1.45fr repeat(3,1fr);gap:10px;margin:8px 0 16px}
+.theatre-hero{background:radial-gradient(circle at 88% 18%,#7c5cff2b,transparent 35%),linear-gradient(145deg,#151a24,#0d1118);border:1px solid #30394a;border-radius:18px;padding:18px}
+.theatre-hero .eyebrow{color:#a68cff;text-transform:uppercase;letter-spacing:1.4px;font-size:10px;font-weight:800}
+.theatre-hero .big{font-size:36px;font-weight:900;line-height:1;margin:8px 0 4px}.theatre-hero .muted{color:#96a0af;font-size:12px}
+.type-stat{background:linear-gradient(145deg,#121720,#0c1016);border:1px solid #28303d;border-radius:14px;padding:14px}.type-stat .icon{font-size:18px;margin-bottom:7px}.type-stat b{font-size:25px;display:block}.type-stat span{font-size:10px;color:#96a0af}.mini-bar{height:5px;background:#090c12;border-radius:99px;margin-top:9px;overflow:hidden}.mini-bar i{display:block;height:100%;background:linear-gradient(90deg,#7c5cff,#a68cff)}
+.theatre-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 14px}.theatre-toolbar h2{margin:0}.theatre-toolbar p{margin:4px 0 0;color:#96a0af;font-size:12px}
+.theatre-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:14px!important}
+.theatre-card{background:linear-gradient(145deg,#121720,#0d1117);border:1px solid #28303d;border-radius:16px;padding:16px;transition:.18s}.theatre-card:hover{transform:translateY(-2px);border-color:#3b4658}
+.theatre-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.theatre-card h3{margin:0;font-size:16px}.type-pill{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:7px;background:#7c5cff16;color:#bcaeff;border:1px solid #7c5cff38;font-size:10px}
+.theatre-meta-row{display:flex;gap:8px;margin:13px 0 10px}.theatre-metric{flex:1;background:#0a0e13;border:1px solid #232b36;border-radius:10px;padding:9px}.theatre-metric b{display:block;font-size:16px}.theatre-metric span{font-size:9px;color:#96a0af}.theatre-spend{color:#f4c95d!important}
+.theatre-movies-list{border-top:1px solid #232b36;margin-top:5px;padding-top:7px}.theatre-movie-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #1c232d;font-size:11px}.theatre-movie-row:last-child{border-bottom:0}.theatre-movie-title{font-weight:650}.theatre-movie-right{text-align:right;color:#96a0af}.theatre-format{color:#a68cff;font-size:9px;margin-top:2px}
+@media(max-width:900px){.theatre-topstats{grid-template-columns:repeat(3,1fr)}.theatre-hero{grid-column:1/-1}}@media(max-width:600px){.theatre-topstats{grid-template-columns:1fr 1fr}.theatre-hero{grid-column:1/-1}.theatre-meta-row{display:grid;grid-template-columns:1fr 1fr}}
+</style>
 </head><body>
 
 <section id="login" class="auth"><div class="authbox"><div class="logo">⚡</div><h1>My Tracker</h1><p>One website. Two private dashboards.</p>
@@ -84,10 +99,16 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 <form class="movieForm" id="movieForm"><input id="title" placeholder="Movie title" required><input id="date" type="date" required><select id="category"><option>New</option><option>Rewatch</option><option>Re-release</option></select><input id="theatre" list="theatre-options" placeholder="Theatre" required><datalist id="theatre-options"></datalist><input id="showtime" type="time"><input id="notes" placeholder="Notes / thoughts"><input id="ticket" type="number" placeholder="Total expense"><button>Add to tracker</button></form></div>
 <div class="card"><div class="cardhead"><div><h2>Movies</h2><p>Sorted by date and showtime.</p></div></div><div class="tableWrap"><table><thead><tr><th>No.</th><th>Movie</th><th>Date</th><th>Category</th><th>Theatre</th><th>Showtime</th><th>Format / Notes</th><th>Expense</th><th></th></tr></thead><tbody id="movieBody"></tbody></table></div></div>
 </div>
-<div id="movieTheatresPage" class="hidden"><div class="card">
-<div id="theatreStats" class="statsline"></div>
-<div class="cardhead"><div><h2>Theatres I've Been To</h2><p id="theatreSummary"></p></div></div><div id="theatreGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div></div></div>
-</div></main>
+<div id="movieTheatresPage" class="hidden">
+  <div id="theatreTopStats" class="theatre-topstats"></div>
+  <div class="card">
+    <div class="theatre-toolbar">
+      <div><h2>Theatres I've Been To</h2><p id="theatreSummary"></p></div>
+    </div>
+    <div id="theatreGrid" class="theatre-grid"></div>
+  </div>
+</div>
+</main>
 <div id="toast" class="toast hidden"></div>
 
 <script type="module">
@@ -398,62 +419,71 @@ async function saveInlineEdit(id){
 }
 window.saveInlineEdit=saveInlineEdit;
 
+function buildTheatreMap(){
+  const map={};
+  movies.forEach(m=>{
+    const n=(m.theatre||"Unknown Theatre").trim();
+    (map[n]||(map[n]=[])).push(m);
+  });
+  return map;
+}
 function renderTheatres(){
   movies=movies.map(normalizeMovie);
+  const map=buildTheatreMap();
   const typeCounts={};THEATRE_TYPES.forEach(t=>typeCounts[t]=0);
-  movies.forEach(m=>typeCounts[m.theatreType||"Independent / Other"]=(typeCounts[m.theatreType||"Independent / Other"]||0)+1);
-  const statsEl=document.getElementById("theatreStats");
-  if(statsEl) statsEl.innerHTML=THEATRE_TYPES.map(t=>`<div class="typeStat"><b>${typeCounts[t]||0}</b><span>${esc(t)}</span></div>`).join("");
+  movies.forEach(m=>{
+    const type=m.theatreType||inferTheatreType(m.theatre);
+    typeCounts[type]=(typeCounts[type]||0)+1;
+  });
 
-  let map={};movies.forEach(m=>{let t=(m.theatre||"Unknown Theatre").trim();(map[t]||(map[t]=[])).push(m)});
-  let names=Object.keys(map).sort((a,b)=>map[b].length-map[a].length);
-  document.getElementById("theatreSummary").textContent=names.length+" theatres across "+movies.length+" movies";
-  document.getElementById("theatreGrid").innerHTML=names.map(n=>`<div class="card">
-    <h3 style="margin:0 0 5px">${esc(n)}</h3>
-    <p style="color:var(--muted);font-size:12px;margin:0 0 10px">${map[n].length} movie(s) · ${esc((map[n][0]&&map[n][0].theatreType)||inferTheatreType(n))}</p>
-    ${map[n].map(m=>`<div style="padding:7px 0;border-top:1px solid var(--line);font-size:12px">
-      ${esc(m.title)}
-      <span style="color:var(--muted);float:right">${m.date||""}</span>
-      <div style="color:#96a0af;font-size:10px;margin-top:2px">${esc((m.formats||[]).join(" · "))}</div>
-    </div>`).join("")}
-  </div>`).join("");
+  const totalMovies=movies.length;
+  const totalSpent=movies.reduce((sum,m)=>sum+Number(m.ticket||0),0);
+  const topType=Object.entries(typeCounts).sort((a,b)=>b[1]-a[1])[0]||["—",0];
+  const topTypePct=totalMovies?Math.round(topType[1]/totalMovies*100):0;
+  const iconMap={"PVR INOX":"🎟️","Cinepolis":"🎞️","Gopalan":"🏢","AMB Cinemas":"✨","Single Screen":"🎥","Independent / Other":"🎬"};
+
+  document.getElementById("theatreTopStats").innerHTML=`
+    <div class="theatre-hero">
+      <div class="eyebrow">Your cinema journey</div>
+      <div class="big">${totalMovies}</div>
+      <div class="muted">movies watched across ${Object.keys(map).length} theatres</div>
+      <div style="margin-top:13px;color:#f4c95d;font-weight:800">₹${totalSpent.toLocaleString("en-IN")} spent</div>
+    </div>
+    ${THEATRE_TYPES.slice(0,3).map(t=>`
+      <div class="type-stat">
+        <div class="icon">${iconMap[t]||"🎬"}</div><b>${typeCounts[t]||0}</b><span>${esc(t)}</span>
+        <div class="mini-bar"><i style="width:${totalMovies?Math.round((typeCounts[t]||0)/totalMovies*100):0}%"></i></div>
+      </div>`).join("")}
+  `;
+
+  const names=Object.keys(map).sort((a,b)=>map[b].length-map[a].length);
+  document.getElementById("theatreSummary").textContent=
+    `${names.length} theatres · ${totalMovies} movies · top category: ${topType[0]} (${topTypePct}%)`;
+
+  document.getElementById("theatreGrid").innerHTML=names.map(name=>{
+    const list=map[name].slice().sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+    const type=(list[0]&&list[0].theatreType)||inferTheatreType(name);
+    const spent=list.reduce((s,m)=>s+Number(m.ticket||0),0);
+    const avg=list.length?Math.round(spent/list.length):0;
+    return `<div class="theatre-card">
+      <div class="theatre-card-head">
+        <div><h3>${esc(name)}</h3><span class="type-pill">${iconMap[type]||"🎬"} ${esc(type)}</span></div>
+        <div style="text-align:right;color:#a68cff;font-weight:900;font-size:19px">${list.length}</div>
+      </div>
+      <div class="theatre-meta-row">
+        <div class="theatre-metric"><b>${list.length}</b><span>movies</span></div>
+        <div class="theatre-metric"><b class="theatre-spend">₹${spent.toLocaleString("en-IN")}</b><span>total spent</span></div>
+        <div class="theatre-metric"><b>₹${avg.toLocaleString("en-IN")}</b><span>avg / movie</span></div>
+      </div>
+      <div class="theatre-movies-list">
+        ${list.map(m=>`<div class="theatre-movie-row">
+          <div><div class="theatre-movie-title">${esc(m.title)}</div><div class="theatre-format">${esc((m.formats||[]).join(" · ")||"Format not set")}</div></div>
+          <div class="theatre-movie-right"><div>${m.date||""}</div><div style="color:#f4c95d">₹${Number(m.ticket||0)}</div></div>
+        </div>`).join("")}
+      </div>
+    </div>`;
+  }).join("");
 }
-function openEditByIndex(index){
-  if(!Number.isInteger(index) || !movies[index]){ toast("Movie not found"); return; }
-  const m=normalizeMovie(movies[index]);
-  editingMovieId=m.id;
-  document.getElementById("editTitle").value=m.title ?? "";
-  document.getElementById("editDate").value=m.date ?? "";
-  document.getElementById("editCategory").value=m.category ?? "New";
-  document.getElementById("editTheatre").value=m.theatre ?? "";
-  document.getElementById("editShowtime").value=m.showtime ?? "";
-  document.getElementById("editTicket").value=m.ticket ?? "";
-  document.getElementById("editTheatreType").value=THEATRE_TYPES.includes(m.theatreType) ? m.theatreType : inferTheatreType(m.theatre);
-  document.getElementById("editNotes").value=m.notes ?? "";
-  const selected=new Set(Array.isArray(m.formats)?m.formats:[]);
-  document.getElementById("editFormats").innerHTML=FORMAT_OPTIONS.map(f=>
-    `<label class="tagcheck"><input type="checkbox" value="${esc(f)}" ${selected.has(f)?"checked":""}>${esc(f)}</label>`
-  ).join("");
-  document.getElementById("editModal").classList.add("show");
-}
-window.openEditByIndex=openEditByIndex;
-window.closeEdit=()=>{editingMovieId=null;document.getElementById("editModal").classList.remove("show")};
-window.saveEdit=async()=>{
-  const m=movies.find(x=>String(x.id)===String(editingMovieId));
-  if(!m){toast("Movie not found");closeEdit();return;}
-  m.title=document.getElementById("editTitle").value.trim();
-  m.date=document.getElementById("editDate").value;
-  m.category=document.getElementById("editCategory").value;
-  m.theatre=document.getElementById("editTheatre").value.trim();
-  m.showtime=document.getElementById("editShowtime").value;
-  m.ticket=Number(document.getElementById("editTicket").value||0);
-  m.notes=document.getElementById("editNotes").value;
-  m.theatreType=document.getElementById("editTheatreType").value;
-  m.formats=[...document.querySelectorAll("#editFormats input[type=checkbox]:checked")].map(x=>x.value);
-  renderMovies();
-  closeEdit();
-  saveMovies();
-};
 window.selectGymDay=d=>{gymDay=d;renderGym()};window.cycleGym=(i,j)=>{let d=day(gymDay),k=i+"_"+j,v=d.sets[k]||"";d.sets[k]=v===""?"done":v==="done"?"partial":"";renderGym();saveGym()};window.gymNote=(i,v)=>{day(gymDay).notes[i]=v;saveGym()};window.setGymAttendance=a=>{day(gymDay).attendance=a;renderGym();saveGym()};window.removeMovie=id=>{movies=movies.filter(m=>m.id!==id);renderMovies();saveMovies()};window.showMoviePage=p=>{document.getElementById("movieTrackerPage").classList.toggle("hidden",p!=="tracker");document.getElementById("movieTheatresPage").classList.toggle("hidden",p!=="theatres");document.getElementById("movieTab").classList.toggle("active",p==="tracker");document.getElementById("theatreTab").classList.toggle("active",p==="theatres")};window.exportCSV=()=>{let csv="No,Movie,Date,Category,Theatre,Showtime,Notes,Expense\n";movies.forEach((m,i)=>csv+=[i+1,`"${(m.title||"").replaceAll('"','""')}"`,m.date||"",m.category||"",`"${(m.theatre||"").replaceAll('"','""')}"`,m.showtime||"",`"${(m.notes||"").replaceAll('"','""')}"`,m.ticket||0].join(",")+"\n");let b=new Blob([csv],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="epic_movie_tracker.csv";a.click()};
 
 document.getElementById("movieForm").addEventListener("submit",e=>{e.preventDefault();movies.push({id:Date.now(),title:title.value,date:date.value,category:category.value,theatre:theatre.value,showtime:showtime.value,notes:notes.value,ticket:ticket.value,theatreType:inferTheatreType(theatre.value),formats:["2D"]});e.target.reset();renderMovies();saveMovies()});
