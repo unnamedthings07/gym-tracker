@@ -25,7 +25,37 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 </style><style>
 #movieBody input,#movieBody select{background:#0b0e14;color:#f4f7fb;border:1px solid #394251;border-radius:7px;padding:6px;font-size:11px}
 .tagwrap-inline{margin-top:6px;max-height:150px;overflow:auto;padding:5px;border:1px solid #28303d;border-radius:7px;background:#0b0e14}
-</style></head><body>
+</style>
+<style>
+.actionBtn{
+  border:1px solid #2f3746!important;
+  background:#141922!important;
+  color:#e8edf5!important;
+  border-radius:8px!important;
+  padding:7px 10px!important;
+  font-size:11px!important;
+  font-weight:600;
+  transition:.15s;
+}
+.actionBtn:hover{background:#1c2330!important;border-color:#4b5870!important}
+.actionBtn.save{background:#7c5cff!important;border-color:#7c5cff!important;color:#fff!important}
+.actionBtn.cancel{background:#171d27!important;color:#cbd3df!important}
+.inline-edit-row td{background:#0d1118!important;border-top:1px solid #3b4658!important;border-bottom:1px solid #3b4658!important;vertical-align:top}
+.inline-edit-row .edit-label{display:block;color:#8d97a7;font-size:9px;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px}
+.inline-edit-row input,.inline-edit-row select{
+  width:100%;min-width:0;padding:8px 9px;background:#090c12;color:#f4f7fb;
+  border:1px solid #303a4a;border-radius:8px;outline:none;font-size:11px
+}
+.inline-edit-row input:focus,.inline-edit-row select:focus{border-color:#7c5cff;box-shadow:0 0 0 2px #7c5cff22}
+.inline-grid{display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:8px;min-width:690px}
+.inline-grid .wide{grid-column:1/-1}
+.inline-format-box{display:flex;gap:5px;flex-wrap:wrap;padding:7px;background:#090c12;border:1px solid #303a4a;border-radius:8px}
+.inline-format-box label{font-size:10px;color:#cbd3df;border:1px solid #2f3746;border-radius:6px;padding:5px 7px;background:#11161f;cursor:pointer}
+.inline-format-box label:has(input:checked){border-color:#7c5cff;background:#7c5cff18;color:#fff}
+.inline-format-box input{width:auto!important;min-width:0!important}
+@media(max-width:900px){.inline-grid{min-width:560px}}
+</style>
+</head><body>
 
 <section id="login" class="auth"><div class="authbox"><div class="logo">⚡</div><h1>My Tracker</h1><p>One website. Two private dashboards.</p>
 <div class="field"><label>EMAIL</label><input id="email" type="email" placeholder="Enter email"></div>
@@ -272,41 +302,76 @@ function renderMovies(){
   renderTheatres();
 }
 
+
 function toggleInlineEdit(id){
   const row=document.getElementById("movie-row-"+id);
   const m=movies.find(x=>String(x.id)===String(id));
   if(!row||!m)return;
-  if(row.dataset.editing==="1"){
-    renderMovies();
-    return;
-  }
+  if(row.dataset.editing==="1"){renderMovies();return;}
+  const formats=m.formats||[];
+  row.classList.add("inline-edit-row");
   row.dataset.editing="1";
-  const formats=(m.formats||[]);
   row.innerHTML=`
-    <td>${movies.findIndex(x=>x.id===m.id)+1}</td>
-    <td><input data-field="title" value="${esc(m.title||"")}" style="width:150px"></td>
-    <td><input data-field="date" type="date" value="${m.date||""}"></td>
-    <td><select data-field="category"><option ${m.category==="New"?"selected":""}>New</option><option ${m.category==="Rewatch"?"selected":""}>Rewatch</option><option ${m.category==="Re-release"?"selected":""}>Re-release</option></select></td>
-    <td>
-      <input data-field="theatre" list="theatre-options" value="${esc(m.theatre||"")}" style="width:160px">
-      <select data-field="theatreType" style="margin-top:4px;width:160px">
-        ${THEATRE_TYPES.map(t=>`<option ${m.theatreType===t?"selected":""}>${esc(t)}</option>`).join("")}
-      </select>
-    </td>
-    <td><input data-field="showtime" type="time" value="${m.showtime||""}"></td>
-    <td style="min-width:180px">
-      <details>
-        <summary style="cursor:pointer;color:#a68cff">Formats</summary>
-        <div class="tagwrap-inline">
-          ${FORMAT_OPTIONS.map(f=>`<label style="display:block;font-size:11px;margin:3px 0"><input type="checkbox" class="fmt" value="${esc(f)}" ${formats.includes(f)?"checked":""}> ${esc(f)}</label>`).join("")}
+    <td colspan="9">
+      <div class="inline-grid">
+        <div>
+          <span class="edit-label">Movie</span>
+          <input data-field="title" value="${esc(m.title||"")}">
         </div>
-      </details>
-      <input data-field="notes" value="${esc(m.notes||"")}" placeholder="Notes" style="width:170px;margin-top:5px">
+        <div>
+          <span class="edit-label">Date</span>
+          <input data-field="date" type="date" value="${m.date||""}">
+        </div>
+        <div>
+          <span class="edit-label">Category</span>
+          <select data-field="category">
+            <option ${m.category==="New"?"selected":""}>New</option>
+            <option ${m.category==="Rewatch"?"selected":""}>Rewatch</option>
+            <option ${m.category==="Re-release"?"selected":""}>Re-release</option>
+          </select>
+        </div>
+        <div>
+          <span class="edit-label">Theatre</span>
+          <input data-field="theatre" list="theatre-options" value="${esc(m.theatre||"")}">
+        </div>
+        <div>
+          <span class="edit-label">Theatre Type</span>
+          <select data-field="theatreType">
+            ${THEATRE_TYPES.map(t=>`<option ${m.theatreType===t?"selected":""}>${esc(t)}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <span class="edit-label">Showtime</span>
+          <input data-field="showtime" type="time" value="${m.showtime||""}">
+        </div>
+        <div>
+          <span class="edit-label">Expense (₹)</span>
+          <input data-field="ticket" type="number" value="${m.ticket||0}">
+        </div>
+        <div class="wide">
+          <span class="edit-label">Formats / Experience</span>
+          <div class="inline-format-box">
+            ${FORMAT_OPTIONS.map(f=>`<label><input class="fmt" type="checkbox" value="${esc(f)}" ${formats.includes(f)?"checked":""}> ${esc(f)}</label>`).join("")}
+          </div>
+        </div>
+        <div class="wide">
+          <span class="edit-label">Notes</span>
+          <input data-field="notes" value="${esc(m.notes||"")}">
+        </div>
+        <div class="wide" style="display:flex;justify-content:flex-end;gap:7px">
+          <button class="actionBtn cancel" onclick="cancelInlineEdit(${m.id})">Cancel</button>
+          <button class="actionBtn save" onclick="saveInlineEdit(${m.id})">Save changes</button>
+        </div>
+      </div>
     </td>
-    <td><input data-field="ticket" type="number" value="${m.ticket||0}" style="width:85px"></td>
-    <td><div style="display:flex;gap:5px"><button class="actionBtn" onclick="saveInlineEdit(${m.id})">Save</button><button class="actionBtn" onclick="renderMovies()">Cancel</button></div></td>
   `;
 }
+window.toggleInlineEdit=toggleInlineEdit;
+
+function cancelInlineEdit(id){
+  renderMovies();
+}
+window.cancelInlineEdit=cancelInlineEdit;
 
 async function saveInlineEdit(id){
   const row=document.getElementById("movie-row-"+id);
@@ -318,17 +383,20 @@ async function saveInlineEdit(id){
   m.theatre=row.querySelector('[data-field="theatre"]').value.trim();
   m.theatreType=row.querySelector('[data-field="theatreType"]').value;
   m.showtime=row.querySelector('[data-field="showtime"]').value;
+  m.ticket=Number(row.querySelector('[data-field="ticket"]').value||0);
   m.notes=row.querySelector('[data-field="notes"]').value;
-  m.ticket=row.querySelector('[data-field="ticket"]').value;
   m.formats=[...row.querySelectorAll(".fmt:checked")].map(x=>x.value);
-  await saveMoviesNow();
-  renderMovies();
+  m.id=Number(m.id);
+  try{
+    await setDoc(movieRef(),{movies:movies.map(normalizeMovie),updatedAt:serverTimestamp()},{merge:true});
+    toast("Movie updated ✓");
+    renderMovies();
+  }catch(err){
+    console.error(err);
+    toast("Couldn't save movie");
+  }
 }
-async function saveMoviesNow(){
-  movies=movies.map(normalizeMovie);
-  await setDoc(movieRef(),{movies,updatedAt:serverTimestamp()},{merge:true});
-  toast("Movie updated ✓");
-}
+window.saveInlineEdit=saveInlineEdit;
 
 function renderTheatres(){
   movies=movies.map(normalizeMovie);
