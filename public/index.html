@@ -264,8 +264,8 @@ async function cloudLoad(){
       gymData=g.exists()?g.data():{days:{}};
       movies=[];
     }else{
-      const [m,p]=await Promise.all([getDoc(movieRef()),getDoc(publicMovieRef())]);
-      movies=m.exists()?(m.data().movies||[]):(p.exists()?(p.data().movies||[]):[]);
+      const m=await getDoc(movieRef());
+      movies=m.exists()?(m.data().movies||[]):[];
       gymData={days:{}};
     }
     return true;
@@ -279,7 +279,23 @@ async function cloudLoad(){
 }
 let saveTimer;
 function saveGym(){clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{await setDoc(gymRef(),gymData,{merge:true});toast("Gym saved ✓")},300)}
-function saveMovies(){movies=movies.map(normalizeMovie);clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{await setDoc(movieRef(),{movies,updatedAt:serverTimestamp()},{merge:true});toast("Movie tracker saved ✓")},300)}
+function saveMovies(){
+  movies=movies.map(normalizeMovie);
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{
+      const payload={movies,updatedAt:serverTimestamp(),source:"movie-account"};
+      await Promise.all([
+        setDoc(movieRef(),payload,{merge:true}),
+        setDoc(publicMovieRef(),payload,{merge:true})
+      ]);
+      toast("Movie tracker saved ✓");
+    }catch(err){
+      console.error("Movie save failed:",err);
+      toast("Couldn't save movie");
+    }
+  },300);
+}
 function toast(x){const t=document.getElementById("toast");t.textContent=x;t.classList.remove("hidden");clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.add("hidden"),1400)}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function renderGym(){const p=gymPlan[gymDay],d=day(gymDay);let total=0,done=0;document.getElementById("gymTitle").textContent=gymDay+" · "+p.title;document.getElementById("gymDays").innerHTML=weekdays.map(x=>{let a=day(x).attendance;return `<button class="day ${x===gymDay?"active":""} ${a||""}" onclick="selectGymDay('${x}')"><div class="n">${x}</div><div class="s">${a==="present"?"✓ Present":a==="partial"?"~ Partial":a==="absent"?"× Absent":"Not marked"}</div></button>`}).join("");document.getElementById("gymExercises").innerHTML=p.e.map((x,i)=>{let[n,t,r]=x;total+=t;let s=Array.from({length:t},(_,j)=>d.sets[i+"_"+j]||"");done+=s.filter(v=>v==="done").length;return `<div class="exercise"><div class="exname">${i+1}. ${n}</div><div class="target">${t} sets · ${r} reps</div><div class="sets">${s.map((v,j)=>`<button class="set ${v}" onclick="cycleGym(${i},${j})">${v==="done"?"✓":v==="partial"?"~":j+1}</button>`).join("")}</div><input class="notes" placeholder="Optional: actual weight / reps / notes" value="${esc(d.notes[i]||"")}" onchange="gymNote(${i},this.value)"></div>`}).join("");const pct=total?Math.round(done/total*100):0;document.getElementById("gymSets").textContent=done;document.getElementById("gymPct").textContent=pct+"%";document.getElementById("gymProgressText").textContent=done+"/"+total;document.getElementById("gymProgressBar").style.width=pct+"%";let a=0,st=0;weekdays.forEach(x=>{let q=day(x);if(["present","partial"].includes(q.attendance))a++});for(let i=weekdays.length-1;i>=0;i--){if(day(weekdays[i]).attendance==="present")st++;else break}document.getElementById("gymAtt").textContent=a+"/7";document.getElementById("gymStreak").textContent=st}
@@ -499,7 +515,32 @@ function renderTheatres(){
 window.selectGymDay=d=>{gymDay=d;renderGym()};window.cycleGym=(i,j)=>{let d=day(gymDay),k=i+"_"+j,v=d.sets[k]||"";d.sets[k]=v===""?"done":v==="done"?"partial":"";renderGym();saveGym()};window.gymNote=(i,v)=>{day(gymDay).notes[i]=v;saveGym()};window.setGymAttendance=a=>{day(gymDay).attendance=a;renderGym();saveGym()};window.removeMovie=id=>{movies=movies.filter(m=>m.id!==id);renderMovies();saveMovies()};window.showMoviePage=p=>{document.getElementById("movieTrackerPage").classList.toggle("hidden",p!=="tracker");document.getElementById("movieTheatresPage").classList.toggle("hidden",p!=="theatres");document.getElementById("movieTab").classList.toggle("active",p==="tracker");document.getElementById("theatreTab").classList.toggle("active",p==="theatres")};window.exportCSV=()=>{let csv="No,Movie,Date,Category,Theatre,Showtime,Notes,Expense\n";movies.forEach((m,i)=>csv+=[i+1,`"${(m.title||"").replaceAll('"','""')}"`,m.date||"",m.category||"",`"${(m.theatre||"").replaceAll('"','""')}"`,m.showtime||"",`"${(m.notes||"").replaceAll('"','""')}"`,m.ticket||0].join(",")+"\n");let b=new Blob([csv],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="epic_movie_tracker.csv";a.click()};
 
 document.getElementById("movieForm").addEventListener("submit",e=>{e.preventDefault();movies.push({id:Date.now(),title:title.value,date:date.value,category:category.value,theatre:theatre.value,showtime:showtime.value,notes:notes.value,ticket:ticket.value,theatreType:inferTheatreType(theatre.value),formats:["2D"]});e.target.reset();renderMovies();saveMovies()});
-document.getElementById("signIn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,email.value.trim(),password.value);authError.textContent=""}catch(e){authError.textContent=e.message.replace("Firebase: ","")}};
+document.getElementById("signIn").onclick=async()=>{
+  const emailInput=document.getElementById("email");
+  const passwordInput=document.getElementById("password");
+  const errorEl=document.getElementById("authError");
+  errorEl.textContent="";
+  try{
+    const emailValue=emailInput.value.trim().toLowerCase();
+    const passwordValue=passwordInput.value;
+    if(!emailValue||!passwordValue){
+      errorEl.textContent="Enter your email and password.";
+      return;
+    }
+    await signInWithEmailAndPassword(auth,emailValue,passwordValue);
+  }catch(e){
+    console.error("Login failed:",e);
+    const code=e.code||"";
+    const messages={
+      "auth/invalid-credential":"Incorrect email or password.",
+      "auth/invalid-email":"That email address is not valid.",
+      "auth/user-disabled":"This account is disabled.",
+      "auth/too-many-requests":"Too many attempts. Try again later.",
+      "auth/network-request-failed":"Network error. Check your internet connection."
+    };
+    errorEl.textContent=messages[code]||e.message.replace(/^Firebase:\s*/,"");
+  }
+};
 window.logout=()=>signOut(auth);
 
 onAuthStateChanged(auth,async u=>{

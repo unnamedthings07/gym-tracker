@@ -1,15 +1,12 @@
-# Unified Gym + Movie Tracker with public movie view
+# Fixed unified tracker
 
-Private app:
-- devilboytej5625@gmail.com -> Gym Tracker
-- unnamedboy07@gmail.com -> Movie Tracker
+- Private URL: root site; authentication routes the two private dashboards.
+- Public movie URL: /movie-public.html (later can be mapped to movies.unnamedboy07.qzz.io).
+- Gym data remains under authenticated user UID.
+- Public page reads only /publicMovies/tracker.
+- Movie account writes both its private movie document and the public snapshot.
 
-Public view:
-- /movie-public.html -> read-only movie tracker
-- It reads only /publicMovies/tracker.
-- No gym data is fetched or included in the public viewer.
-
-Important:
-1. Deploy hosting.
-2. Publish firestore.rules.
-3. Log in to the movie account once after deployment so its private movie data is mirrored to publicMovies/tracker.
+After deploying:
+1. Publish firestore.rules.
+2. Log into the movie account once and make/save a movie change (or wait for initial seed if empty).
+3. Public viewer will then show the movies.

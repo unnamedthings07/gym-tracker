@@ -31,7 +31,7 @@ const time=t=>{if(!t)return"";let[h,m]=t.split(":").map(Number),amp=h>=12?"PM":"
 async function load(){
   try{
     const s=await getDoc(ref);
-    if(!s.exists()){document.getElementById("error").textContent="Public movie data is not available yet.";return}
+    if(!s.exists()){document.getElementById("error").textContent="Public movie data is not available yet. Log into the private movie tracker once after deploying this version to publish the current movie list.";return}
     const movies=s.data().movies||[];
     const total=movies.reduce((x,m)=>x+Number(m.ticket||0),0);
     const newC=movies.filter(m=>m.category==="New").length;
