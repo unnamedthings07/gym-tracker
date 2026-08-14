@@ -255,16 +255,23 @@ let editingMovieId=null;
 
 function day(d){return gymData.days[d]||(gymData.days[d]={attendance:null,sets:{},notes:{}})}
 function gymRef(){return doc(db,"users",auth.currentUser.uid,"gym","tracker")}
-function movieRef(){return doc(db,"users",auth.currentUser.uid,"movies","tracker")}
+function movieRef(){return doc(db,"users",auth.currentUser.uid,"movies","tracker")}\nfunction publicMovieRef(){return doc(db,"publicMovies","tracker")}
 async function cloudLoad(){
   try{
-    const [g,m]=await Promise.all([getDoc(gymRef()),getDoc(movieRef())]);
-    gymData=g.exists()?g.data():{days:{}};
-    movies=m.exists()?(m.data().movies||[]):[];
+    const mail=(auth.currentUser.email||"").toLowerCase();
+    if(mail===GYM_EMAIL){
+      const g=await getDoc(gymRef());
+      gymData=g.exists()?g.data():{days:{}};
+      movies=[];
+    }else{
+      const [m,p]=await Promise.all([getDoc(movieRef()),getDoc(publicMovieRef())]);
+      movies=m.exists()?(m.data().movies||[]):(p.exists()?(p.data().movies||[]):[]);
+      gymData={days:{}};
+    }
     return true;
   }catch(err){
-    console.error("Firestore load failed:", err);
-    toast("Cloud data unavailable — showing local session");
+    console.error("Firestore load failed:",err);
+    toast("Cloud data unavailable");
     gymData={days:{}};
     movies=[];
     return false;
@@ -414,7 +421,7 @@ async function saveInlineEdit(id){
   m.formats=[...row.querySelectorAll(".fmt:checked")].map(x=>x.value);
   m.id=Number(m.id);
   try{
-    await setDoc(movieRef(),{movies:movies.map(normalizeMovie),updatedAt:serverTimestamp()},{merge:true});
+    await Promise.all([setDoc(movieRef(),{movies:movies.map(normalizeMovie),updatedAt:serverTimestamp()},{merge:true}),setDoc(publicMovieRef(),{movies:movies.map(normalizeMovie),updatedAt:serverTimestamp(),source:"movie-account"},{merge:true})]);
     toast("Movie updated ✓");
     renderMovies();
   }catch(err){
@@ -530,7 +537,7 @@ onAuthStateChanged(auth,async u=>{
   if(!isGym && loaded && movies.length===0){
     movies=initialData.map(x=>({...x}));
     try{
-      await setDoc(movieRef(),{movies,updatedAt:serverTimestamp()});
+      await Promise.all([setDoc(movieRef(),{movies,updatedAt:serverTimestamp()},{merge:true}),setDoc(publicMovieRef(),{movies,updatedAt:serverTimestamp(),source:"movie-account"},{merge:true})]);
       renderMovies();
     }catch(err){
       console.error("Initial movie seed failed:",err);

@@ -1,12 +1,15 @@
-# Unified Gym + Movie Tracker
+# Unified Gym + Movie Tracker with public movie view
 
-One Firebase-hosted website with two account-specific dashboards.
-
+Private app:
 - devilboytej5625@gmail.com -> Gym Tracker
-- unnamedboy07@gmail.com -> Epic Movie Tracker
+- unnamedboy07@gmail.com -> Movie Tracker
 
-Authentication is Firebase Auth. Data is stored under each Firebase user's UID in Firestore.
+Public view:
+- /movie-public.html -> read-only movie tracker
+- It reads only /publicMovies/tracker.
+- No gym data is fetched or included in the public viewer.
 
-Deploy:
-1. firebase login
-2. firebase deploy --only hosting,firestore
+Important:
+1. Deploy hosting.
+2. Publish firestore.rules.
+3. Log in to the movie account once after deployment so its private movie data is mirrored to publicMovies/tracker.

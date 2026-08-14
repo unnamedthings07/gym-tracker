@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Epic Movie Tracker — Public</title>
+<style>
+:root{--bg:#080a0f;--panel:#11151d;--line:#28303d;--text:#f4f7fb;--muted:#96a0af;--a:#7c5cff;--g:#35d399;--y:#f4c95d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#2a1a6555,transparent 34%),var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+.wrap{max-width:1180px;margin:auto;padding:24px 16px 70px}.brand{display:flex;align-items:center;gap:11px;margin-bottom:26px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--a),#4d35d1);display:grid;place-items:center;font-size:22px}.brand h1{margin:0;font-size:20px}.brand p{margin:2px 0 0;color:var(--muted);font-size:11px}.hero{padding:22px;border:1px solid var(--line);border-radius:20px;background:radial-gradient(circle at 90% 10%,#7c5cff2b,transparent 35%),linear-gradient(145deg,#151a24,#0d1118);margin-bottom:15px}.eyebrow{font-size:10px;color:#a68cff;text-transform:uppercase;letter-spacing:1.4px;font-weight:800}.hero h2{font-size:30px;margin:8px 0}.hero p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.stat{padding:15px;background:linear-gradient(145deg,#121720,#0d1117);border:1px solid var(--line);border-radius:14px}.stat span{display:block;color:var(--muted);font-size:11px}.stat b{display:block;font-size:24px;margin-top:5px}.card{background:linear-gradient(145deg,#11151d,#0e1117);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:#a68cff;background:#0c0f15}.badge{padding:4px 7px;border-radius:5px;font-size:10px;font-weight:800}.new{background:#0f8f64}.rewatch{background:#b67c08}.rerelease{background:#6d43c7}.format{color:#a68cff;font-size:10px}.expense{color:var(--y);font-weight:800}.theatre-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}.theatre{padding:14px;border:1px solid var(--line);border-radius:14px;background:#0d1117}.theatre h3{margin:0}.meta{display:flex;gap:7px;margin:10px 0}.pill{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#0a0e13;font-size:10px;color:var(--muted)}.movie{padding:8px 0;border-top:1px solid #202732;font-size:11px;display:flex;justify-content:space-between;gap:8px}.err{color:#ff7d8d;padding:10px 0}
+@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:550px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><div class="logo">🎬</div><div><h1>EPIC MOVIE TRACKER</h1><p>PUBLIC VIEW · READ ONLY</p></div></div>
+  <section class="hero"><div class="eyebrow">Public cinema log</div><h2>Epic Movie Tracker 100</h2><p>Browse the movies watched, theatres visited, formats and spending. This page is read-only.</p></section>
+  <div id="stats" class="grid"></div>
+  <div class="card"><h2 style="margin-top:0">Movies</h2><div class="tableWrap"><table><thead><tr><th>No.</th><th>Movie</th><th>Date</th><th>Category</th><th>Theatre</th><th>Format</th><th>Showtime</th><th>Expense</th></tr></thead><tbody id="movies"></tbody></table></div></div>
+  <div class="card"><h2 style="margin-top:0">Theatres</h2><div id="theatres" class="theatre-grid"></div></div>
+  <div id="error" class="err"></div>
+</div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import {firebaseConfig} from "./firebase-config.js";
+const app=initializeApp(firebaseConfig),db=getFirestore(app);
+const ref=doc(db,"publicMovies","tracker");
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const time=t=>{if(!t)return"";let[h,m]=t.split(":").map(Number),amp=h>=12?"PM":"AM";h=h%12||12;return`${h}:${String(m).padStart(2,"0")} ${amp}`};
+async function load(){
+  try{
+    const s=await getDoc(ref);
+    if(!s.exists()){document.getElementById("error").textContent="Public movie data is not available yet.";return}
+    const movies=s.data().movies||[];
+    const total=movies.reduce((x,m)=>x+Number(m.ticket||0),0);
+    const newC=movies.filter(m=>m.category==="New").length;
+    const re=movies.filter(m=>m.category==="Re-release").length;
+    const rw=movies.filter(m=>m.category==="Rewatch").length;
+    const theatres=new Set(movies.map(m=>(m.theatre||"Unknown").trim()));
+    document.getElementById("stats").innerHTML=`
+      <div class="stat"><span>Movies watched</span><b>${movies.length}</b></div>
+      <div class="stat"><span>New</span><b>${newC}</b></div>
+      <div class="stat"><span>Re-releases</span><b>${re}</b></div>
+      <div class="stat"><span>Rewatches</span><b>${rw}</b></div>
+      <div class="stat"><span>Theatres</span><b>${theatres.size}</b></div>
+      <div class="stat"><span>Total spent</span><b>₹${total.toLocaleString("en-IN")}</b></div>
+      <div class="stat"><span>Average / movie</span><b>₹${movies.length?Math.round(total/movies.length):0}</b></div>`;
+    document.getElementById("movies").innerHTML=movies.slice().sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.showtime||"99:99").localeCompare(b.showtime||"99:99")).map((m,i)=>`
+      <tr><td>${i+1}</td><td><b>${esc(m.title||"")}</b></td><td>${m.date||""}</td>
+      <td><span class="badge ${m.category==="New"?"new":m.category==="Rewatch"?"rewatch":"rerelease"}">${esc(m.category||"")}</span></td>
+      <td>${esc(m.theatre||"")}</td><td class="format">${esc((m.formats||[]).join(" · ")||"—")}</td><td>${time(m.showtime)}</td><td class="expense">₹${Number(m.ticket||0)}</td></tr>`).join("");
+    const map={};movies.forEach(m=>{const n=(m.theatre||"Unknown Theatre").trim();(map[n]||(map[n]=[])).push(m)});
+    document.getElementById("theatres").innerHTML=Object.entries(map).sort((a,b)=>b[1].length-a[1].length).map(([name,list])=>{
+      const spent=list.reduce((s,m)=>s+Number(m.ticket||0),0);
+      return `<div class="theatre"><h3>${esc(name)}</h3><div class="meta"><span class="pill">${list.length} movies</span><span class="pill">₹${spent.toLocaleString("en-IN")}</span></div>${list.slice().sort((a,b)=>(a.date||"").localeCompare(b.date||"")).map(m=>`<div class="movie"><span>${esc(m.title||"")}<span class="format" style="display:block">${esc((m.formats||[]).join(" · ")||"—")}</span></span><span style="color:#96a0af">${m.date||""}</span></div>`).join("")}</div>`;
+    }).join("");
+  }catch(e){console.error(e);document.getElementById("error").textContent="Could not load public movie data."}
+}
+load();
+</script>
+</body>
+</html>
