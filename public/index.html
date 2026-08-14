@@ -255,7 +255,8 @@ let editingMovieId=null;
 
 function day(d){return gymData.days[d]||(gymData.days[d]={attendance:null,sets:{},notes:{}})}
 function gymRef(){return doc(db,"users",auth.currentUser.uid,"gym","tracker")}
-function movieRef(){return doc(db,"users",auth.currentUser.uid,"movies","tracker")}\nfunction publicMovieRef(){return doc(db,"publicMovies","tracker")}
+function movieRef(){return doc(db,"users",auth.currentUser.uid,"movies","tracker")}
+function publicMovieRef(){return doc(db,"publicMovies","tracker")}
 async function cloudLoad(){
   try{
     const mail=(auth.currentUser.email||"").toLowerCase();
@@ -538,7 +539,7 @@ document.getElementById("signIn").onclick=async()=>{
       "auth/too-many-requests":"Too many attempts. Try again later.",
       "auth/network-request-failed":"Network error. Check your internet connection."
     };
-    errorEl.textContent=messages[code]||e.message.replace(/^Firebase:\s*/,"");
+    errorEl.textContent=messages[code]||String(e.message||e).replace(/^Firebase:\s*/,"");
   }
 };
 window.logout=()=>signOut(auth);
