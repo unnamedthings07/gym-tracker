@@ -9,8 +9,7 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 .auth{min-height:100vh;display:grid;place-items:center;padding:20px}.authbox{width:min(430px,100%);padding:28px;background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 55px #0008}
 .logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--a),#4d35d1);display:grid;place-items:center;font-size:22px}.authbox h1{margin:14px 0 5px}.authbox p{color:var(--muted);font-size:13px}.field{margin:12px 0}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}.field input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0b0e14;color:var(--text);outline:none}.authbox button{width:100%;padding:12px;border:1px solid var(--a);background:var(--a);color:white;border-radius:10px;margin-top:5px}.error{color:var(--r);font-size:12px;margin-top:8px}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.brand{display:flex;align-items:center;gap:11px}.brand h1{margin:0;font-size:20px}.brand p{margin:2px 0 0;color:var(--muted);font-size:11px}.user{display:flex;gap:9px;align-items:center}.user span{font-size:12px;color:var(--muted)}.user button,.ghost{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 12px;border-radius:10px}
-.pageTitle{margin:0 0 5px;font-size:30px}.pageSub{margin:0 0 18px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}.card{background:linear-gradient(145deg,#11151d,#0e1117);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 15px 45px #0005}.stat span{font-size:11px;color:var(--muted)}.stat b{display:block;font-size:24px;margin-top:5px}.cardhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}.cardhead h2,.cardhead h3{margin:0}.cardhead p{margin:4px 0 0;color:var(--muted);font-size:12px}
-
+.pageTitle{margin:0 0 5px;font-size:30px}.pageSub{margin:0 0 18px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}.card{background:linear-gradient(145deg,#11151d,#0e1117);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 15px 45px #0005}.stat span{font-size:11px;color:var(--muted)}.stat b{display:block;font-size:24px;margin-top:5px}.cardhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.cardhead h2,.cardhead h3{margin:0}.cardhead p{margin:4px 0 0;color:var(--muted);font-size:12px}
 .exercise{padding:14px 0;border-top:1px solid var(--line)}.exercise:first-child{border-top:0}.exname{font-weight:800}.target{color:var(--muted);font-size:12px;margin-top:3px}.sets{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.set{width:40px;height:36px;border-radius:9px;border:1px solid #3a4352;background:#0c0f15;color:var(--muted)}.set.done{border-color:var(--g);background:#35d39914;color:var(--g)}.set.partial{border-color:var(--y);background:#f4c95d14;color:var(--y)}.notes{width:100%;margin-top:8px;background:#0b0e14;border:1px solid var(--line);color:var(--text);padding:9px;border-radius:9px}
 .bar{height:9px;background:#0b0e14;border:1px solid var(--line);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),#a68cff)}
 .attBtns{display:flex;gap:6px}.attBtns button{padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text)}.primary{background:var(--a)!important;border-color:var(--a)!important;color:#fff!important}
@@ -20,59 +19,22 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 .nav{display:flex;gap:7px;margin-bottom:15px;flex-wrap:wrap}.nav button{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 13px;border-radius:10px}.nav button.active{background:var(--a);color:#fff;border-color:var(--a)}
 .toast{position:fixed;right:17px;bottom:17px;background:#171c26;border:1px solid var(--line);padding:11px 14px;border-radius:10px}
 
-.historyHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-.historyHead h2{margin:0;font-size:18px}.historyHead p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.historyNav{display:flex;gap:6px;align-items:center}.historyNav button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:8px 10px}.historyNav .month{min-width:135px;font-weight:800}
-.historyLegend{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px;color:var(--muted);font-size:11px}
-.historyLegend span{display:inline-flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot.done{background:var(--g)}.dot.partial{background:var(--y)}.dot.absent{background:var(--r)}.dot.empty{background:#596273}
-.historyWeek{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}.historyWeek b{font-size:10px;color:var(--muted);text-align:center;padding:5px}
-.historyGrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.historyDay{min-height:72px;padding:8px;border:1px solid var(--line);background:#0c0f15;color:var(--text);border-radius:10px;text-align:left;position:relative;overflow:hidden}
-.historyDay:hover{border-color:#4a5668}.historyDay.out{opacity:.38}.historyDay.today{box-shadow:inset 0 0 0 1px #7c5cff66}.historyDay.selected{border-color:var(--a);background:#7c5cff14}
-.historyDay .num{font-weight:800;font-size:12px}.historyDay .work{font-size:9px;color:#b8c1cf;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.historyDay .status{font-size:9px;margin-top:4px;font-weight:700}
-.historyDay.done .status{color:var(--g)}.historyDay.partial .status{color:var(--y)}.historyDay.absent .status{color:var(--r)}.historyDay.empty .status{color:var(--muted)}
-.historyDay .todayDot{position:absolute;right:7px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--a)}
+.historyHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.historyHead h2{margin:0;font-size:18px}.historyHead p{margin:4px 0 0;color:var(--muted);font-size:12px}.historyNav{display:flex;gap:6px;align-items:center}.historyNav button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:8px 10px}.historyNav .month{min-width:135px;font-weight:800}.historyLegend{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px;color:var(--muted);font-size:11px}.historyLegend span{display:inline-flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot.done{background:var(--g)}.dot.partial{background:var(--y)}.dot.absent{background:var(--r)}.dot.empty{background:#596273}.historyWeek{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}.historyWeek b{font-size:10px;color:var(--muted);text-align:center;padding:5px}.historyGrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.historyDay{min-height:72px;padding:8px;border:1px solid var(--line);background:#0c0f15;color:var(--text);border-radius:10px;text-align:left;position:relative;overflow:hidden}.historyDay:hover{border-color:#4a5668}.historyDay.out{opacity:.38}.historyDay.today{box-shadow:inset 0 0 0 1px #7c5cff66}.historyDay.selected{border-color:var(--a);background:#7c5cff14}.historyDay .num{font-weight:800;font-size:12px}.historyDay .work{font-size:9px;color:#b8c1cf;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.historyDay .status{font-size:9px;margin-top:4px;font-weight:700}.historyDay.done .status{color:var(--g)}.historyDay.partial .status{color:var(--y)}.historyDay.absent .status{color:var(--r)}.historyDay.empty .status{color:var(--muted)}.historyDay .todayDot{position:absolute;right:7px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--a)}
 @media(max-width:600px){.historyHead{align-items:flex-start;flex-direction:column}.historyNav{width:100%}.historyNav button{flex:1}.historyNav .month{flex:2}.historyGrid,.historyWeek{gap:4px}.historyDay{min-height:62px;padding:6px}.historyDay .work{font-size:8px}.historyDay .status{font-size:8px}}
-
 @media(max-width:850px){.grid{grid-template-columns:1fr 1fr}.movieForm{grid-template-columns:1fr 1fr}}@media(max-width:600px){.wrap{padding:15px 11px}.user span{display:none}.grid{grid-template-columns:1fr 1fr}.movieForm{grid-template-columns:1fr}}
-
-#movieBody input,#movieBody select{background:#0b0e14;color:#f4f7fb;border:1px solid #394251;border-radius:7px;padding:6px;font-size:11px}
-.tagwrap-inline{margin-top:6px;max-height:150px;overflow:auto;padding:5px;border:1px solid #28303d;border-radius:7px;background:#0b0e14}
-.actionBtn{border:1px solid #2f3746!important;background:#141922!important;color:#e8edf5!important;border-radius:8px!important;padding:7px 10px!important;font-size:11px!important;font-weight:600;transition:.15s}.actionBtn:hover{background:#1c2330!important;border-color:#4b5870!important}.actionBtn.save{background:#7c5cff!important;border-color:#7c5cff!important;color:#fff!important}.actionBtn.cancel{background:#171d27!important;color:#cbd3df!important}
-.inline-edit-row td{background:#0d1118!important;border-top:1px solid #3b4658!important;border-bottom:1px solid #3b4658!important;vertical-align:top}.inline-edit-row .edit-label{display:block;color:#8d97a7;font-size:9px;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px}.inline-edit-row input,.inline-edit-row select{width:100%;min-width:0;padding:8px 9px;background:#090c12;color:#f4f7fb;border:1px solid #303a4a;border-radius:8px;outline:none;font-size:11px}.inline-edit-row input:focus,.inline-edit-row select:focus{border-color:#7c5cff;box-shadow:0 0 0 2px #7c5cff22}.inline-grid{display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:8px;min-width:690px}.inline-grid .wide{grid-column:1/-1}.inline-format-box{display:flex;gap:5px;flex-wrap:wrap;padding:7px;background:#090c12;border:1px solid #303a4a;border-radius:8px}.inline-format-box label{font-size:10px;color:#cbd3df;border:1px solid #2f3746;border-radius:6px;padding:5px 7px;background:#11161f;cursor:pointer}.inline-format-box label:has(input:checked){border-color:#7c5cff;background:#7c5cff18;color:#fff}.inline-format-box input{width:auto!important;min-width:0!important}
-@media(max-width:900px){.inline-grid{min-width:560px}}
-.theatre-topstats{display:grid;grid-template-columns:1.45fr repeat(3,1fr);gap:10px;margin:8px 0 16px}.theatre-hero{background:radial-gradient(circle at 88% 18%,#7c5cff2b,transparent 35%),linear-gradient(145deg,#151a24,#0d1118);border:1px solid #30394a;border-radius:18px;padding:18px}.theatre-hero .eyebrow{color:#a68cff;text-transform:uppercase;letter-spacing:1.4px;font-size:10px;font-weight:800}.theatre-hero .big{font-size:36px;font-weight:900;line-height:1;margin:8px 0 4px}.theatre-hero .muted{color:#96a0af;font-size:12px}.type-stat{background:linear-gradient(145deg,#121720,#0c1016);border:1px solid #28303d;border-radius:14px;padding:14px}.type-stat .icon{font-size:18px;margin-bottom:7px}.type-stat b{font-size:25px;display:block}.type-stat span{font-size:10px;color:#96a0af}.mini-bar{height:5px;background:#090c12;border-radius:99px;margin-top:9px;overflow:hidden}.mini-bar i{display:block;height:100%;background:linear-gradient(90deg,#7c5cff,#a68cff)}.theatre-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 14px}.theatre-toolbar h2{margin:0}.theatre-toolbar p{margin:4px 0 0;color:#96a0af;font-size:12px}.theatre-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:14px!important}.theatre-card{background:linear-gradient(145deg,#121720,#0d1117);border:1px solid #28303d;border-radius:16px;padding:16px;transition:.18s}.theatre-card:hover{transform:translateY(-2px);border-color:#3b4658}.theatre-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.theatre-card h3{margin:0;font-size:16px}.type-pill{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:7px;background:#7c5cff16;color:#bcaeff;border:1px solid #7c5cff38;font-size:10px}.theatre-meta-row{display:flex;gap:8px;margin:13px 0 10px}.theatre-metric{flex:1;background:#0a0e13;border:1px solid #232b36;border-radius:10px;padding:9px}.theatre-metric b{display:block;font-size:16px}.theatre-metric span{font-size:9px;color:#96a0af}.theatre-spend{color:#f4c95d!important}.theatre-movies-list{border-top:1px solid #232b36;margin-top:5px;padding-top:7px}.theatre-movie-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #1c232d;font-size:11px}.theatre-movie-row:last-child{border-bottom:0}.theatre-movie-title{font-weight:650}.theatre-movie-right{text-align:right;color:#96a0af}.theatre-format{color:#a68cff;font-size:9px;margin-top:2px}
-@media(max-width:1100px){.theatre-topstats{grid-template-columns:1fr repeat(3,1fr)}}@media(max-width:900px){.theatre-topstats{grid-template-columns:repeat(3,1fr)}.theatre-hero{grid-column:1/-1}}@media(max-width:600px){.theatre-topstats{grid-template-columns:1fr 1fr}.theatre-hero{grid-column:1/-1}.theatre-meta-row{display:grid;grid-template-columns:1fr 1fr}}
+#movieBody input,#movieBody select{background:#0b0e14;color:#f4f7fb;border:1px solid #394251;border-radius:7px;padding:6px;font-size:11px}.tagwrap-inline{margin-top:6px;max-height:150px;overflow:auto;padding:5px;border:1px solid #28303d;border-radius:7px;background:#0b0e14}.actionBtn{border:1px solid #2f3746!important;background:#141922!important;color:#e8edf5!important;border-radius:8px!important;padding:7px 10px!important;font-size:11px!important;font-weight:600;transition:.15s}.actionBtn:hover{background:#1c2330!important;border-color:#4b5870!important}.actionBtn.save{background:#7c5cff!important;border-color:#7c5cff!important;color:#fff!important}.actionBtn.cancel{background:#171d27!important;color:#cbd3df!important}.inline-edit-row td{background:#0d1118!important;border-top:1px solid #3b4658!important;border-bottom:1px solid #3b4658!important;vertical-align:top}.inline-edit-row .edit-label{display:block;color:#8d97a7;font-size:9px;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px}.inline-edit-row input,.inline-edit-row select{width:100%;min-width:0;padding:8px 9px;background:#090c12;color:#f4f7fb;border:1px solid #303a4a;border-radius:8px;outline:none;font-size:11px}.inline-edit-row input:focus,.inline-edit-row select:focus{border-color:#7c5cff;box-shadow:0 0 0 2px #7c5cff22}.inline-grid{display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:8px;min-width:690px}.inline-grid .wide{grid-column:1/-1}.inline-format-box{display:flex;gap:5px;flex-wrap:wrap;padding:7px;background:#090c12;border:1px solid #303a4a;border-radius:8px}.inline-format-box label{font-size:10px;color:#cbd3df;border:1px solid #2f3746;border-radius:6px;padding:5px 7px;background:#11161f;cursor:pointer}.inline-format-box label:has(input:checked){border-color:#7c5cff;background:#7c5cff18;color:#fff}.inline-format-box input{width:auto!important;min-width:0!important}@media(max-width:900px){.inline-grid{min-width:560px}}
+.theatre-topstats{display:grid;grid-template-columns:1.45fr repeat(3,1fr);gap:10px;margin:8px 0 16px}.theatre-hero{background:radial-gradient(circle at 88% 18%,#7c5cff2b,transparent 35%),linear-gradient(145deg,#151a24,#0d1118);border:1px solid #30394a;border-radius:18px;padding:18px}.theatre-hero .eyebrow{color:#a68cff;text-transform:uppercase;letter-spacing:1.4px;font-size:10px;font-weight:800}.theatre-hero .big{font-size:36px;font-weight:900;line-height:1;margin:8px 0 4px}.theatre-hero .muted{color:#96a0af;font-size:12px}.type-stat{background:linear-gradient(145deg,#121720,#0c1016);border:1px solid #28303d;border-radius:14px;padding:14px}.type-stat .icon{font-size:18px;margin-bottom:7px}.type-stat b{font-size:25px;display:block}.type-stat span{font-size:10px;color:#96a0af}.mini-bar{height:5px;background:#090c12;border-radius:99px;margin-top:9px;overflow:hidden}.mini-bar i{display:block;height:100%;background:linear-gradient(90deg,#7c5cff,#a68cff)}.theatre-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 14px}.theatre-toolbar h2{margin:0}.theatre-toolbar p{margin:4px 0 0;color:#96a0af;font-size:12px}.theatre-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:14px!important}.theatre-card{background:linear-gradient(145deg,#121720,#0d1117);border:1px solid #28303d;border-radius:16px;padding:16px;transition:.18s}.theatre-card:hover{transform:translateY(-2px);border-color:#3b4658}.theatre-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.theatre-card h3{margin:0;font-size:16px}.type-pill{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:7px;background:#7c5cff16;color:#bcaeff;border:1px solid #7c5cff38;font-size:10px}.theatre-meta-row{display:flex;gap:8px;margin:13px 0 10px}.theatre-metric{flex:1;background:#0a0e13;border:1px solid #232b36;border-radius:10px;padding:9px}.theatre-metric b{display:block;font-size:16px}.theatre-metric span{font-size:9px;color:#96a0af}.theatre-spend{color:#f4c95d!important}.theatre-movies-list{border-top:1px solid #232b36;margin-top:5px;padding-top:7px}.theatre-movie-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #1c232d;font-size:11px}.theatre-movie-row:last-child{border-bottom:0}.theatre-movie-title{font-weight:650}.theatre-movie-right{text-align:right;color:#96a0af}.theatre-format{color:#a68cff;font-size:9px;margin-top:2px}@media(max-width:1100px){.theatre-topstats{grid-template-columns:1fr repeat(3,1fr)}}@media(max-width:900px){.theatre-topstats{grid-template-columns:repeat(3,1fr)}.theatre-hero{grid-column:1/-1}}@media(max-width:600px){.theatre-topstats{grid-template-columns:1fr 1fr}.theatre-hero{grid-column:1/-1}.theatre-meta-row{display:grid;grid-template-columns:1fr 1fr}}
 </style></head><body>
 <section id="login" class="auth"><div class="authbox"><div class="logo">⚡</div><h1>My Tracker</h1><p>One website. Two private dashboards.</p><div class="field"><label>EMAIL</label><input id="email" type="email" placeholder="Enter email"></div><div class="field"><label>PASSWORD</label><input id="password" type="password" placeholder="Password"></div><button id="signIn">Sign in</button><div id="authError" class="error"></div></div></section>
-<main id="app" class="wrap hidden"><header class="top"><div class="brand"><div class="logo" id="logo">⚡</div><div><h1 id="brandTitle">My Tracker</h1><p id="brandSub">CLOUD SYNCED</p></div></div><div class="user"><span id="userEmail"></span><button onclick="logout()">Sign out</button></div></header>
-<div id="statusHint" style="display:none;margin:0 0 14px;padding:10px 12px;border:1px solid var(--line);background:#0c0f15;border-radius:10px;color:var(--muted);font-size:12px"></div>
+<main id="app" class="wrap hidden"><div class="top"><div class="brand"><div class="logo">⚡</div><div><h1 id="brandTitle">My Tracker</h1><p id="brandSub">CLOUD SYNCED</p></div></div><div class="user"><span id="userEmail"></span><button onclick="logout()">Sign out</button></div></div>
 <div id="gymView" class="hidden"><h1 class="pageTitle">Gym Tracker</h1><p class="pageSub">Track every set, partial set, note and attendance across devices.</p>
-<div class="card">
-  <div class="historyHead">
-    <div>
-      <h2>Workout History</h2>
-      <p>Tap a date to open the exact workout you recorded that day.</p>
-    </div>
-    <div class="historyNav">
-      <button onclick="changeHistoryMonth(-1)">‹</button>
-      <button class="month" id="historyMonthLabel"></button>
-      <button onclick="changeHistoryMonth(1)">›</button>
-      <button onclick="goHistoryToday()">Today</button>
-    </div>
-  </div>
-  <div class="historyLegend">
-    <span><i class="dot done"></i> Completed</span>
-    <span><i class="dot partial"></i> Partial</span>
-    <span><i class="dot absent"></i> Missed</span>
-    <span><i class="dot empty"></i> Not logged</span>
-  </div>
-  <div id="gymHistoryCalendar"></div>
-</div>
+<div class="card"><div class="cardhead"><div><h2>Workout History</h2><p>Tap a date to open the exact workout you recorded that day.</p></div><div class="historyNav"><button onclick="changeHistoryMonth(-1)">‹</button><button class="month" id="historyMonthLabel"></button><button onclick="changeHistoryMonth(1)">›</button><button onclick="goHistoryToday()">Today</button></div></div><div class="historyLegend"><span><i class="dot done"></i> Completed</span><span><i class="dot partial"></i> Partial</span><span><i class="dot absent"></i> Missed</span><span><i class="dot empty"></i> Not logged</span></div><div id="gymHistoryCalendar"></div></div>
 <section class="grid"><div class="card stat"><span>Attendance</span><b id="gymAtt">0/7</b></div><div class="card stat"><span>Today's sets</span><b id="gymSets">0</b></div><div class="card stat"><span>Today's progress</span><b id="gymPct">0%</b></div><div class="card stat"><span>Streak</span><b id="gymStreak">0</b></div></section>
 <div class="card"><div class="cardhead"><div><h2 id="gymTitle"></h2><p>Balanced physique · strength · conditioning · core</p></div><div class="attBtns"><button onclick="markHistoricalAttendance('present')">✓ Present</button><button onclick="markHistoricalAttendance('partial')">~ Partial</button><button onclick="markHistoricalAttendance('absent')">× Absent</button></div></div><div class="bar"><i id="gymProgressBar"></i></div><p style="margin:7px 0 0;color:var(--muted);font-size:12px"><span id="gymProgressText">0/0</span> sets completed</p><div id="gymExercises"></div></div></div>
 <div id="movieView" class="hidden"></div>
 </main><div id="toast" class="toast hidden"></div>
+<script src="./gym-history.js"></script>
+<script src="./gym-history-ui.js"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
@@ -82,315 +44,33 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const GYM_EMAIL="devilboytej5625@gmail.com",MOVIE_EMAIL="unnamedboy07@gmail.com";
 
 const gymPlan={
-  Monday:{
-    title:"Push · Chest, Shoulders & Triceps",
-    e:[
-      ["Chest Press",3,"8–12"],
-      ["Incline Chest Press",3,"8–12"],
-      ["Pec Deck / Chest Fly",2,"12–15"],
-      ["Shoulder Press",3,"8–12"],
-      ["Lateral Raise",3,"12–15"],
-      ["Tricep Pushdown",3,"10–15"],
-      ["Overhead Tricep Extension",2,"10–15"]
-    ]
-  },
-
-  Tuesday:{
-    title:"Pull · Back, Rear Delts & Biceps",
-    e:[
-      ["Lat Pulldown",3,"8–12"],
-      ["Seated Cable Row",3,"8–12"],
-      ["Chest-Supported Row",2,"10–12"],
-      ["Face Pull",2,"12–15"],
-      ["Dumbbell Bicep Curl",3,"10–12"],
-      ["Hammer Curl",2,"10–12"]
-    ]
-  },
-
-  Wednesday:{
-    title:"Core + Conditioning · Abs & Fitness",
-    e:[
-      ["Cable Crunch",3,"10–15"],
-      ["Hanging Knee Raise",3,"10–15"],
-      ["Plank",3,"30–60 sec"],
-      ["Dead Bug",2,"10–12 each"],
-      ["Treadmill Incline Walk",1,"20–30 min"],
-      ["Cycling / Elliptical",1,"15–20 min"]
-    ]
-  },
-
-  Thursday:{
-    title:"Upper Body · Chest, Back & Delts",
-    e:[
-      ["Machine Chest Press",3,"10–12"],
-      ["Incline Chest Press",2,"10–12"],
-      ["Lat Pulldown",3,"10–12"],
-      ["Seated Cable Row",3,"10–12"],
-      ["Lateral Raise",3,"12–15"],
-      ["Rear Delt Fly",2,"12–15"],
-      ["Tricep Pushdown",2,"10–15"],
-      ["Hammer Curl",2,"10–15"]
-    ]
-  },
-
-  Friday:{
-    title:"Core + Conditioning · Fat-Loss Support",
-    e:[
-      ["Cable Crunch",3,"10–15"],
-      ["Hanging Knee Raise",3,"10–15"],
-      ["Plank",3,"30–60 sec"],
-      ["Dead Bug",2,"10–12 each"],
-      ["Treadmill Incline Walk",1,"20–30 min"],
-      ["Cycling / Elliptical",1,"15–20 min"]
-    ]
-  },
-
-  Saturday:{
-    title:"Leg Day · Quads, Hamstrings, Glutes & Calves",
-    e:[
-      ["Leg Press",4,"8–12"],
-      ["Hack Squat / Leg Press",3,"8–12"],
-      ["Leg Extension",3,"10–15"],
-      ["Leg Curl",3,"10–15"],
-      ["Romanian Deadlift",3,"8–12"],
-      ["Hip Thrust / Glute Drive",3,"8–12"],
-      ["Calf Raise",4,"12–20"],
-      ["Hanging Knee Raise",3,"10–15"],
-      ["Cable Crunch",3,"10–15"]
-    ]
-  },
-
-  Sunday:{
-    title:"Recovery · Mobility & Easy Cardio",
-    e:[
-      ["Treadmill Easy Walk",1,"20–30 min"],
-      ["Cycling / Elliptical",1,"15–20 min"],
-      ["Full-Body Mobility",1,"10–15 min"]
-    ]
-  }
+  Monday:{title:"Push · Chest, Shoulders & Triceps",e:[["Chest Press",3,"8–12"],["Incline Chest Press",3,"8–12"],["Pec Deck / Chest Fly",2,"12–15"],["Shoulder Press",3,"8–12"],["Lateral Raise",3,"12–15"],["Tricep Pushdown",3,"10–15"],["Overhead Tricep Extension",2,"10–15"]]},
+  Tuesday:{title:"Pull · Back, Rear Delts & Biceps",e:[["Lat Pulldown",3,"8–12"],["Seated Cable Row",3,"8–12"],["Chest-Supported Row",2,"10–12"],["Face Pull",2,"12–15"],["Dumbbell Bicep Curl",3,"10–12"],["Hammer Curl",2,"10–12"]]},
+  Wednesday:{title:"Core + Conditioning · Abs & Fitness",e:[["Cable Crunch",3,"10–15"],["Hanging Knee Raise",3,"10–15"],["Plank",3,"30–60 sec"],["Dead Bug",2,"10–12 each"],["Treadmill Incline Walk",1,"20–30 min"],["Cycling / Elliptical",1,"15–20 min"]]},
+  Thursday:{title:"Upper Body · Chest, Back & Delts",e:[["Machine Chest Press",3,"10–12"],["Incline Chest Press",2,"10–12"],["Lat Pulldown",3,"10–12"],["Seated Cable Row",3,"10–12"],["Lateral Raise",3,"12–15"],["Rear Delt Fly",2,"12–15"],["Tricep Pushdown",2,"10–15"],["Hammer Curl",2,"10–15"]]},
+  Friday:{title:"Core + Conditioning · Fat-Loss Support",e:[["Cable Crunch",3,"10–15"],["Hanging Knee Raise",3,"10–15"],["Plank",3,"30–60 sec"],["Dead Bug",2,"10–12 each"],["Treadmill Incline Walk",1,"20–30 min"],["Cycling / Elliptical",1,"15–20 min"]]},
+  Saturday:{title:"Leg Day · Quads, Hamstrings, Glutes & Calves",e:[["Leg Press",4,"8–12"],["Hack Squat / Leg Press",3,"8–12"],["Leg Extension",3,"10–15"],["Leg Curl",3,"10–15"],["Romanian Deadlift",3,"8–12"],["Hip Thrust / Glute Drive",3,"8–12"],["Calf Raise",4,"12–20"],["Hanging Knee Raise",3,"10–15"],["Cable Crunch",3,"10–15"]]},
+  Sunday:{title:"Recovery · Mobility & Easy Cardio",e:[["Treadmill Easy Walk",1,"20–30 min"],["Cycling / Elliptical",1,"15–20 min"],["Full-Body Mobility",1,"10–15 min"]]}
 };
 const weekdays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-let gymData={days:{},history:{}};
-let gymHistorySelectedDate=localDateKey(new Date());
+let gymData={days:{},history:{}},gymDay=weekdays[(new Date().getDay()+6)%7];
+let gymHistorySelectedDate=GymHistory.gymDateKey();
 let gymHistoryMonth=new Date();
-
-function localDateKey(d){
-  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-function dateFromKey(key){
-  const [y,m,d]=key.split("-").map(Number);
-  return new Date(y,m-1,d);
-}
-function workoutDayForDate(dateKey){
-  const d=dateFromKey(dateKey);
-  return weekdays[(d.getDay()+6)%7];
-}
-function historyRecord(dateKey){
-  if(!gymData.history) gymData.history={};
-  if(!gymData.history[dateKey]){
-    gymData.history[dateKey]={
-      attendance:null,
-      exercises:{},
-      notes:{}
-    };
-  }
-  if(!gymData.history[dateKey].exercises) gymData.history[dateKey].exercises={};
-  if(!gymData.history[dateKey].notes) gymData.history[dateKey].notes={};
-  return gymData.history[dateKey];
-}
-function pruneHistory(){
-  const now=new Date();
-  const cutoff=new Date(now.getFullYear(),now.getMonth(),now.getDate()-92);
-  const cutoffKey=localDateKey(cutoff);
-  Object.keys(gymData.history||{}).forEach(k=>{
-    if(k<cutoffKey) delete gymData.history[k];
-  });
-}
-function historyStats(dateKey){
-  const rec=gymData.history?.[dateKey];
-  const plan=gymPlan[workoutDayForDate(dateKey)];
-  if(!rec) return {state:"empty",done:0,total:plan.e.reduce((a,x)=>a+x[1],0),pct:0};
-
-  const total=plan.e.reduce((a,x)=>a+x[1],0);
-  const done=Object.values(rec.exercises||{}).filter(v=>v==="done").length;
-  const pct=total?Math.round(done/total*100):0;
-
-  if(rec.attendance==="absent") return {state:"absent",done,total,pct};
-  if(pct===100 || rec.attendance==="present" && done>0) return {state:"done",done,total,pct};
-  if(done>0 || rec.attendance==="partial") return {state:"partial",done,total,pct};
-  return {state:"empty",done,total,pct};
-}
-async function saveHistory(){
-  pruneHistory();
-  await setDoc(gymRef(),{
-    history:gymData.history,
-    updatedAt:serverTimestamp()
-  },{merge:true});
-}
-function renderGymHistory(){
-  const host=document.getElementById("gymHistoryCalendar");
-  if(!host) return;
-
-  pruneHistory();
-
-  const y=gymHistoryMonth.getFullYear(),m=gymHistoryMonth.getMonth();
-  document.getElementById("historyMonthLabel").textContent=
-    gymHistoryMonth.toLocaleDateString(undefined,{month:"long",year:"numeric"});
-
-  const first=new Date(y,m,1);
-  const start=(first.getDay()+6)%7;
-  const days=new Date(y,m+1,0).getDate();
-  const prevDays=new Date(y,m,0).getDate();
-
-  let html='<div class="historyWeek">';
-  ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(x=>html+=`<b>${x}</b>`);
-  html+='</div><div class="historyGrid">';
-
-  for(let i=0;i<42;i++){
-    const offset=i-start+1;
-    let d, out=false;
-    if(offset<1){d=new Date(y,m-1,prevDays+offset);out=true}
-    else if(offset>days){d=new Date(y,m+1,offset-days);out=true}
-    else d=new Date(y,m,offset);
-
-    const key=localDateKey(d);
-    const state=historyStats(key);
-    const selected=key===gymHistorySelectedDate;
-    const today=key===localDateKey(new Date());
-    const work=workoutDayForDate(key);
-    const pct=state.total?`${state.pct}%`:"";
-
-    const status=state.state==="done"
-      ?`✓ ${pct||"Done"}`
-      :state.state==="partial"
-        ?`~ ${state.done}/${state.total}`
-        :state.state==="absent"
-          ?"× Missed"
-          :"Not logged";
-
-    html+=`<button class="historyDay ${state.state} ${selected?"selected":""} ${today?"today":""} ${out?"out":""}"
-      onclick="selectHistoryDate('${key}')">
-      ${today?'<i class="todayDot"></i>':''}
-      <div class="num">${d.getDate()}</div>
-      <div class="work">${esc(work)}</div>
-      <div class="status">${status}</div>
-    </button>`;
-  }
-
-  html+='</div>';
-  host.innerHTML=html;
-}
-function selectHistoryDate(key){
-  gymHistorySelectedDate=key;
-  loadHistoricalWorkout(key);
-  renderGymHistory();
-}
-window.selectHistoryDate=selectHistoryDate;
-
-function changeHistoryMonth(amount){
-  const now=new Date();
-  const next=new Date(gymHistoryMonth.getFullYear(),gymHistoryMonth.getMonth()+amount,1);
-  const oldest=new Date(now.getFullYear(),now.getMonth()-2,1);
-  const newest=new Date(now.getFullYear(),now.getMonth(),1);
-  if(next<oldest || next>newest) return;
-  gymHistoryMonth=next;
-  renderGymHistory();
-}
-window.changeHistoryMonth=changeHistoryMonth;
-
-function goHistoryToday(){
-  const now=new Date();
-  gymHistorySelectedDate=localDateKey(now);
-  gymHistoryMonth=new Date(now.getFullYear(),now.getMonth(),1);
-  loadHistoricalWorkout(gymHistorySelectedDate);
-  renderGymHistory();
-}
-window.goHistoryToday=goHistoryToday;
-
-function loadHistoricalWorkout(dateKey){
-  const dayName=workoutDayForDate(dateKey);
-  const plan=gymPlan[dayName];
-  const rec=historyRecord(dateKey);
-
-  document.getElementById("gymTitle").textContent=`${dayName} · ${plan.title}`;
-
-  let total=0,done=0;
-  document.getElementById("gymExercises").innerHTML=plan.e.map((x,i)=>{
-    const [name,target,reps]=x;
-    total+=target;
-    const sets=Array.from({length:target},(_,j)=>rec.exercises[i+"_"+j]||"");
-    done+=sets.filter(v=>v==="done").length;
-
-    return `<div class="exercise">
-      <div class="exname">${i+1}. ${name}</div>
-      <div class="target">${target} sets · ${reps} reps</div>
-      <div class="sets">
-        ${sets.map((v,j)=>`<button class="set ${v}" onclick="cycleHistoricalSet('${dateKey}',${i},${j})">${v==="done"?"✓":v==="partial"?"~":j+1}</button>`).join("")}
-      </div>
-      <input class="notes" placeholder="Optional: actual weight / reps / notes"
-        value="${esc(rec.notes[i]||"")}"
-        onchange="saveHistoricalNote('${dateKey}',${i},this.value)">
-    </div>`;
-  }).join("");
-
-  const pct=total?Math.round(done/total*100):0;
-  document.getElementById("gymSets").textContent=done;
-  document.getElementById("gymPct").textContent=pct+"%";
-  document.getElementById("gymProgressText").textContent=done+"/"+total;
-  document.getElementById("gymProgressBar").style.width=pct+"%";
-
-  document.getElementById("gymAtt").textContent=
-    rec.attendance==="present"?"Present":
-    rec.attendance==="partial"?"Partial":
-    rec.attendance==="absent"?"Missed":"Not marked";
-
-  document.getElementById("gymStreak").textContent=calculateStreak(dateKey);
-}
-function calculateStreak(fromKey){
-  let count=0;
-  const d=dateFromKey(fromKey);
-  for(let i=0;i<92;i++){
-    const key=localDateKey(d);
-    const rec=gymData.history?.[key];
-    if(rec?.attendance==="present" || historyStats(key).pct===100) count++;
-    else if(rec?.attendance==="absent") break;
-    d.setDate(d.getDate()-1);
-  }
-  return count;
-}
-window.cycleHistoricalSet=async function(dateKey,i,j){
-  const rec=historyRecord(dateKey);
-  const key=i+"_"+j;
-  const current=rec.exercises[key]||"";
-  rec.exercises[key]=current===""?"partial":current==="partial"?"done":"";
-  await saveHistory();
-  loadHistoricalWorkout(dateKey);
-  renderGymHistory();
-  toast("Workout saved ✓");
-};
-window.saveHistoricalNote=async function(dateKey,i,value){
-  const rec=historyRecord(dateKey);
-  rec.notes[i]=value;
-  await saveHistory();
-  toast("Note saved ✓");
-};
-window.markHistoricalAttendance=async function(value){
-  const rec=historyRecord(gymHistorySelectedDate);
-  rec.attendance=value;
-  await saveHistory();
-  loadHistoricalWorkout(gymHistorySelectedDate);
-  renderGymHistory();
-  toast("Attendance saved ✓");
-};
-
-function renderGym(){
-  loadHistoricalWorkout(gymHistorySelectedDate);
-  renderGymHistory();
-}
-
+function day(d){return gymData.days[d]||(gymData.days[d]={attendance:null,sets:{},notes:{}})}
+function gymRef(){return doc(db,"users",auth.currentUser.uid,"gym","tracker")}
+async function cloudLoad(){try{const g=await getDoc(gymRef());gymData=g.exists()?g.data():{days:{},history:{}};if(!gymData.days)gymData.days={};if(!gymData.history)gymData.history={};gymData.history=GymHistory.pruneGymHistory(gymData.history);return true}catch(err){console.error(err);toast("Cloud data unavailable");gymData={days:{},history:{}};return false}}
+let saveTimer;function saveGym(){clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{await setDoc(gymRef(),gymData,{merge:true});toast("Gym saved ✓")},300)}
+function toast(x){const t=document.getElementById("toast");t.textContent=x;t.classList.remove("hidden");clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.add("hidden"),1400)}
+function esc(s){return String(s).replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#039;"}[c]))}
+function renderGymHistory(){GymHistoryUI.mountGymHistoryStyles();GymHistoryUI.renderGymHistoryCalendar({containerId:"gymHistoryCalendar",gymData,gymPlan,selectedDateKey:gymHistorySelectedDate,monthDate:gymHistoryMonth,onSelect:(dateKey)=>{gymHistorySelectedDate=dateKey;loadHistoricalWorkout(dateKey);renderGymHistory()}});window.__gymHistoryShiftMonth=(amount)=>{const now=new Date();const next=new Date(gymHistoryMonth.getFullYear(),gymHistoryMonth.getMonth()+amount,1);const oldest=new Date(now.getFullYear(),now.getMonth()-2,1);const newest=new Date(now.getFullYear(),now.getMonth(),1);if(next<oldest||next>newest)return;gymHistoryMonth=next;renderGymHistory()};}
+function loadHistoricalWorkout(dateKey){const info=GymHistory.gymHistoryWorkoutForDate(gymPlan,dateKey);const plan=info.plan;if(!plan)return;const record=GymHistory.gymHistoryEnsureDate(gymData,dateKey,gymPlan);document.getElementById("gymTitle").textContent=`${info.dayName} · ${plan.title}`;let total=0,done=0;document.getElementById("gymExercises").innerHTML=plan.e.map((x,i)=>{const[name,target,reps]=x;total+=target;const sets=Array.from({length:target},(_,j)=>record.exercises?.[i+"_"+j]||"");done+=sets.filter(v=>v==="done").length;return `<div class="exercise"><div class="exname">${i+1}. ${name}</div><div class="target">${target} sets · ${reps} reps</div><div class="sets">${sets.map((v,j)=>`<button class="set ${v}" onclick="cycleHistoricalSet('${dateKey}',${i},${j})">${v==="done"?"✓":v==="partial"?"~":j+1}</button>`).join("")}</div><input class="notes" placeholder="Optional: actual weight / reps / notes" value="${esc(record.notes?.[i]||"")}" onchange="saveHistoricalNote('${dateKey}',${i},this.value)"></div>`}).join("");const pct=total?Math.round(done/total*100):0;document.getElementById("gymSets").textContent=done;document.getElementById("gymPct").textContent=pct+"%";document.getElementById("gymProgressText").textContent=done+"/"+total;document.getElementById("gymProgressBar").style.width=pct+"%";let attendanceLabel=record.attendance||"";document.getElementById("gymAtt").textContent=attendanceLabel?(attendanceLabel==="present"?"Present":attendanceLabel==="partial"?"Partial":"Missed"):"Not marked";document.getElementById("gymStreak").textContent="—";}
+window.cycleHistoricalSet=async function(dateKey,i,j){const record=GymHistory.gymHistoryEnsureDate(gymData,dateKey,gymPlan);if(!record.exercises)record.exercises={};const key=i+"_"+j,current=record.exercises[key]||"";record.exercises[key]=current===""?"partial":current==="partial"?"done":"";gymData.history=GymHistory.pruneGymHistory(gymData.history);await setDoc(gymRef(),{history:gymData.history,updatedAt:serverTimestamp()},{merge:true});loadHistoricalWorkout(dateKey);renderGymHistory();toast("Workout saved ✓")};
+window.saveHistoricalNote=async function(dateKey,i,value){const record=GymHistory.gymHistoryEnsureDate(gymData,dateKey,gymPlan);if(!record.notes)record.notes={};record.notes[i]=value;await setDoc(gymRef(),{history:gymData.history,updatedAt:serverTimestamp()},{merge:true});toast("Note saved ✓")};
+window.markHistoricalAttendance=async function(value){const record=GymHistory.gymHistoryEnsureDate(gymData,gymHistorySelectedDate,gymPlan);record.attendance=value;gymData.history=GymHistory.pruneGymHistory(gymData.history);await setDoc(gymRef(),{history:gymData.history,updatedAt:serverTimestamp()},{merge:true});loadHistoricalWorkout(gymHistorySelectedDate);renderGymHistory();toast("Attendance saved ✓")};
+function changeHistoryMonth(amount){const now=new Date();const next=new Date(gymHistoryMonth.getFullYear(),gymHistoryMonth.getMonth()+amount,1);const oldest=new Date(now.getFullYear(),now.getMonth()-2,1);const newest=new Date(now.getFullYear(),now.getMonth(),1);if(next<oldest||next>newest)return;gymHistoryMonth=next;renderGymHistory()}window.changeHistoryMonth=changeHistoryMonth;
+function goHistoryToday(){const now=new Date();gymHistorySelectedDate=GymHistory.gymDateKey(now);gymHistoryMonth=new Date(now.getFullYear(),now.getMonth(),1);renderGym();}window.goHistoryToday=goHistoryToday;
+function renderGym(){renderGymHistory();loadHistoricalWorkout(gymHistorySelectedDate)}
 function logout(){signOut(auth)}window.logout=logout;
-
-onAuthStateChanged(auth,async user=>{if(!user){document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");return}document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");document.getElementById("userEmail").textContent=user.email||"";if((user.email||"").toLowerCase()===GYM_EMAIL){document.getElementById("brandTitle").textContent="Gym Tracker";document.getElementById("brandSub").textContent="FULL BODY · CLOUD SYNCED";document.getElementById("gymView").classList.remove("hidden");await cloudLoad();renderGym();}else{document.getElementById("brandTitle").textContent="My Tracker";document.getElementById("brandSub").textContent="CLOUD SYNCED";document.getElementById("gymView").classList.add("hidden")}});
+onAuthStateChanged(auth,async user=>{if(!user){document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");return}document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");document.getElementById("userEmail").textContent=user.email||"";if((user.email||"").toLowerCase()===GYM_EMAIL){document.getElementById("brandTitle").textContent="Gym Tracker";document.getElementById("brandSub").textContent="FULL BODY · CLOUD SYNCED";document.getElementById("gymView").classList.remove("hidden");await cloudLoad();renderGym()}else{document.getElementById("brandTitle").textContent="My Tracker";document.getElementById("brandSub").textContent="CLOUD SYNCED";document.getElementById("gymView").classList.add("hidden")}});
 document.getElementById("signIn").onclick=async()=>{const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;try{await signInWithEmailAndPassword(auth,email,password);document.getElementById("authError").textContent=""}catch(e){document.getElementById("authError").textContent=e.message}};
 </script></body></html>
