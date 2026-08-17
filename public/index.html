@@ -33,10 +33,21 @@ button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!impo
 <main id="app" class="wrap hidden"><header class="top"><div class="brand"><div class="logo" id="logo">⚡</div><div><h1 id="brandTitle">My Tracker</h1><p id="brandSub">CLOUD SYNCED</p></div></div><div class="user"><span id="userEmail"></span><button onclick="logout()">Sign out</button></div></header>
 <div id="statusHint" style="display:none;margin:0 0 14px;padding:10px 12px;border:1px solid var(--line);background:#0c0f15;border-radius:10px;color:var(--muted);font-size:12px"></div>
 <div id="gymView" class="hidden"><h1 class="pageTitle">Gym Tracker</h1><p class="pageSub">Track every set, partial set, note and attendance across devices.</p><div class="days" id="gymDays"></div>
+<div class="card">
+  <div class="cardhead">
+    <div>
+      <h2>Workout Calendar</h2>
+      <p>Select a date to load the exact workout you recorded that day.</p>
+    </div>
+  </div>
+  <div id="gymHistoryCalendar"></div>
+</div>
 <section class="grid"><div class="card stat"><span>Attendance</span><b id="gymAtt">0/7</b></div><div class="card stat"><span>Today's sets</span><b id="gymSets">0</b></div><div class="card stat"><span>Today's progress</span><b id="gymPct">0%</b></div><div class="card stat"><span>Streak</span><b id="gymStreak">0</b></div></section>
-<div class="card"><div class="cardhead"><div><h2 id="gymTitle"></h2><p>Balanced physique · strength · conditioning · core</p></div><div class="attBtns"><button onclick="markGym('present')">✓ Present</button><button onclick="markGym('partial')">~ Partial</button><button onclick="markGym('absent')">× Absent</button></div></div><div class="bar"><i id="gymProgressBar"></i></div><p style="margin:7px 0 0;color:var(--muted);font-size:12px"><span id="gymProgressText">0/0</span> sets completed</p><div id="gymExercises"></div></div></div>
+<div class="card"><div class="cardhead"><div><h2 id="gymTitle"></h2><p>Balanced physique · strength · conditioning · core</p></div><div class="attBtns"><button onclick="markHistoricalAttendance('present')">✓ Present</button><button onclick="markHistoricalAttendance('partial')">~ Partial</button><button onclick="markHistoricalAttendance('absent')">× Absent</button></div></div><div class="bar"><i id="gymProgressBar"></i></div><p style="margin:7px 0 0;color:var(--muted);font-size:12px"><span id="gymProgressText">0/0</span> sets completed</p><div id="gymExercises"></div></div></div>
 <div id="movieView" class="hidden"></div>
 </main><div id="toast" class="toast hidden"></div>
+<script src="./gym-history.js"></script>
+<script src="./gym-history-ui.js"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
@@ -134,10 +145,26 @@ const gymPlan={
   }
 };
 const weekdays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-let gymData={days:{}},gymDay=weekdays[(new Date().getDay()+6)%7];
+let gymData={days:{},history:{}},gymDay=weekdays[(new Date().getDay()+6)%7];
+let gymHistorySelectedDate=GymHistory.gymDateKey();
+let gymHistoryMonth=new Date();
 function day(d){return gymData.days[d]||(gymData.days[d]={attendance:null,sets:{},notes:{}})}
 function gymRef(){return doc(db,"users",auth.currentUser.uid,"gym","tracker")}
-async function cloudLoad(){try{const g=await getDoc(gymRef());gymData=g.exists()?g.data():{days:{}};return true}catch(err){console.error(err);toast("Cloud data unavailable");gymData={days:{}};return false}}
+async function cloudLoad(){
+  try{
+    const g=await getDoc(gymRef());
+    gymData=g.exists()?g.data():{days:{},history:{}};
+    if(!gymData.days) gymData.days={};
+    if(!gymData.history) gymData.history={};
+    gymData.history=GymHistory.pruneGymHistory(gymData.history);
+    return true;
+  }catch(err){
+    console.error(err);
+    toast("Cloud data unavailable");
+    gymData={days:{},history:{}};
+    return false;
+  }
+}
 let saveTimer;function saveGym(){clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{await setDoc(gymRef(),gymData,{merge:true});toast("Gym saved ✓")},300)}
 function toast(x){const t=document.getElementById("toast");t.textContent=x;t.classList.remove("hidden");clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.add("hidden"),1400)}
 function esc(s){return String(s).replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#039;"}[c]))}
@@ -146,8 +173,132 @@ function selectGymDay(x){gymDay=x;renderGym()}window.selectGymDay=selectGymDay;
 function cycleGym(i,j){const d=day(gymDay),k=i+"_"+j,v=d.sets[k]||"";d.sets[k]=v===""?"partial":v==="partial"?"done":"";saveGym();renderGym()}window.cycleGym=cycleGym;
 function gymNote(i,v){day(gymDay).notes[i]=v;saveGym()}window.gymNote=gymNote;
 function markGym(v){day(gymDay).attendance=v;saveGym();renderGym()}window.markGym=markGym;
+
+function renderGymHistory(){
+  GymHistoryUI.mountGymHistoryStyles();
+  GymHistoryUI.renderGymHistoryCalendar({
+    containerId:"gymHistoryCalendar",
+    gymData,
+    gymPlan,
+    selectedDateKey:gymHistorySelectedDate,
+    monthDate:gymHistoryMonth,
+    onSelect:(dateKey)=>{
+      gymHistorySelectedDate=dateKey;
+      const info=GymHistory.gymHistoryWorkoutForDate(gymPlan,dateKey);
+      gymDay=info.dayName;
+      loadHistoricalWorkout(dateKey);
+      renderGymHistory();
+    }
+  });
+
+  window.__gymHistoryShiftMonth=(amount)=>{
+    const now=new Date();
+    const next=new Date(gymHistoryMonth.getFullYear(),gymHistoryMonth.getMonth()+amount,1);
+    const oldest=new Date(now.getFullYear(),now.getMonth()-2,1);
+    const newest=new Date(now.getFullYear(),now.getMonth(),1);
+    if(next<oldest || next>newest) return;
+    gymHistoryMonth=next;
+    renderGymHistory();
+  };
+}
+
+function loadHistoricalWorkout(dateKey){
+  const info=GymHistory.gymHistoryWorkoutForDate(gymPlan,dateKey);
+  const plan=info.plan;
+  if(!plan) return;
+
+  const record=GymHistory.gymHistoryEnsureDate(gymData,dateKey,gymPlan);
+  document.getElementById("gymTitle").textContent=`${info.dayName} · ${plan.title}`;
+
+  let total=0,done=0;
+  document.getElementById("gymExercises").innerHTML=plan.e.map((x,i)=>{
+    const [name,target,reps]=x;
+    total+=target;
+    const sets=Array.from({length:target},(_,j)=>record.exercises?.[i+"_"+j]||"");
+    done+=sets.filter(v=>v==="done").length;
+
+    return `<div class="exercise">
+      <div class="exname">${i+1}. ${name}</div>
+      <div class="target">${target} sets · ${reps} reps</div>
+      <div class="sets">
+        ${sets.map((v,j)=>`<button class="set ${v}" onclick="cycleHistoricalSet('${dateKey}',${i},${j})">${v==="done"?"✓":v==="partial"?"~":j+1}</button>`).join("")}
+      </div>
+      <input class="notes" placeholder="Optional: actual weight / reps / notes"
+        value="${esc(record.notes?.[i]||"")}"
+        onchange="saveHistoricalNote('${dateKey}',${i},this.value)">
+    </div>`;
+  }).join("");
+
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById("gymSets").textContent=done;
+  document.getElementById("gymPct").textContent=pct+"%";
+  document.getElementById("gymProgressText").textContent=done+"/"+total;
+  document.getElementById("gymProgressBar").style.width=pct+"%";
+
+  let attendanceLabel=record.attendance||"";
+  document.getElementById("gymAtt").textContent=attendanceLabel
+    ? (attendanceLabel==="present"?"Present":attendanceLabel==="partial"?"Partial":"Missed")
+    : "Not marked";
+  document.getElementById("gymStreak").textContent="—";
+}
+
+window.cycleHistoricalSet=async function(dateKey,i,j){
+  const record=GymHistory.gymHistoryEnsureDate(gymData,dateKey,gymPlan);
+  if(!record.exercises) record.exercises={};
+
+  const key=i+"_"+j;
+  const current=record.exercises[key]||"";
+  record.exercises[key]=current===""?"partial":current==="partial"?"done":"";
+
+  gymData.history=GymHistory.pruneGymHistory(gymData.history);
+  await setDoc(gymRef(),{
+    history:gymData.history,
+    updatedAt:serverTimestamp()
+  },{merge:true});
+
+  loadHistoricalWorkout(dateKey);
+  renderGymHistory();
+  toast("Workout saved ✓");
+};
+
+window.saveHistoricalNote=async function(dateKey,i,value){
+  const record=GymHistory.gymHistoryEnsureDate(gymData,dateKey,gymPlan);
+  if(!record.notes) record.notes={};
+  record.notes[i]=value;
+
+  await setDoc(gymRef(),{
+    history:gymData.history,
+    updatedAt:serverTimestamp()
+  },{merge:true});
+
+  toast("Note saved ✓");
+};
+
+function markHistoricalAttendance(value){
+  const record=GymHistory.gymHistoryEnsureDate(gymData,gymHistorySelectedDate,gymPlan);
+  record.attendance=value;
+  gymData.history=GymHistory.pruneGymHistory(gymData.history);
+
+  setDoc(gymRef(),{
+    history:gymData.history,
+    updatedAt:serverTimestamp()
+  },{merge:true}).then(()=>{
+    loadHistoricalWorkout(gymHistorySelectedDate);
+    renderGymHistory();
+    toast("Attendance saved ✓");
+  });
+}
+
+function useSelectedDate(){
+  const dateKey=gymHistorySelectedDate;
+  const info=GymHistory.gymHistoryWorkoutForDate(gymPlan,dateKey);
+  gymDay=info.dayName;
+  loadHistoricalWorkout(dateKey);
+  renderGymHistory();
+}
+
 function logout(){signOut(auth)}window.logout=logout;
 
-onAuthStateChanged(auth,async user=>{if(!user){document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");return}document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");document.getElementById("userEmail").textContent=user.email||"";if((user.email||"").toLowerCase()===GYM_EMAIL){document.getElementById("brandTitle").textContent="Gym Tracker";document.getElementById("brandSub").textContent="FULL BODY · CLOUD SYNCED";document.getElementById("gymView").classList.remove("hidden");await cloudLoad();renderGym()}else{document.getElementById("brandTitle").textContent="My Tracker";document.getElementById("brandSub").textContent="CLOUD SYNCED";document.getElementById("gymView").classList.add("hidden")}});
+onAuthStateChanged(auth,async user=>{if(!user){document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");return}document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");document.getElementById("userEmail").textContent=user.email||"";if((user.email||"").toLowerCase()===GYM_EMAIL){document.getElementById("brandTitle").textContent="Gym Tracker";document.getElementById("brandSub").textContent="FULL BODY · CLOUD SYNCED";document.getElementById("gymView").classList.remove("hidden");await cloudLoad();renderGym();renderGymHistory();loadHistoricalWorkout(gymHistorySelectedDate)}else{document.getElementById("brandTitle").textContent="My Tracker";document.getElementById("brandSub").textContent="CLOUD SYNCED";document.getElementById("gymView").classList.add("hidden")}});
 document.getElementById("signIn").onclick=async()=>{const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;try{await signInWithEmailAndPassword(auth,email,password);document.getElementById("authError").textContent=""}catch(e){document.getElementById("authError").textContent=e.message}};
 </script></body></html>
