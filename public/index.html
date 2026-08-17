@@ -46,13 +46,92 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const GYM_EMAIL="devilboytej5625@gmail.com",MOVIE_EMAIL="unnamedboy07@gmail.com";
 
 const gymPlan={
-Monday:{title:"Push · Chest, Shoulders & Triceps",e:[["Chest Press",3,"8–12"],["Incline Chest Press",3,"8–12"],["Pec Deck / Chest Fly",2,"12–15"],["Shoulder Press",3,"8–12"],["Lateral Raise",3,"12–15"],["Tricep Pushdown",3,"10–15"],["Overhead Tricep Extension",2,"10–15"]]},
-Tuesday:{title:"Pull · Back, Rear Delts & Biceps",e:[["Lat Pulldown",3,"8–12"],["Seated Cable Row",3,"8–12"],["Chest-Supported Row",2,"10–12"],["Face Pull",2,"12–15"],["Dumbbell Bicep Curl",3,"10–12"],["Hammer Curl",2,"10–12"]]},
-Wednesday:{title:"Legs + Core · Quads, Hamstrings, Glutes & Calves",e:[["Leg Press",3,"8–12"],["Leg Extension",3,"10–15"],["Leg Curl",3,"10–15"],["Hip Thrust / Glute Drive",3,"8–12"],["Calf Raise",4,"12–20"],["Cable Crunch",3,"10–15"],["Plank",3,"30–60 sec"]]},
-Thursday:{title:"Upper Body · Chest, Back & Delts",e:[["Machine Chest Press",3,"10–12"],["Incline Chest Press",2,"10–12"],["Lat Pulldown",3,"10–12"],["Seated Cable Row",3,"10–12"],["Lateral Raise",3,"12–15"],["Rear Delt Fly",2,"12–15"],["Tricep Pushdown",2,"10–15"],["Hammer Curl",2,"10–15"]]},
-Friday:{title:"Lower Body + Core · Legs, Glutes & Abs",e:[["Hack Squat / Leg Press",3,"8–12"],["Bulgarian Split Squat",2,"8–12 each"],["Romanian Deadlift",3,"8–12"],["Leg Curl",2,"10–15"],["Calf Raise",3,"12–20"],["Hanging Knee Raise",3,"10–15"],["Cable Crunch",3,"10–15"]]},
-Saturday:{title:"Conditioning + Full Body · Fat-Loss Support",e:[["Treadmill Incline Walk",1,"25–35 min"],["Cycling / Elliptical",1,"15–20 min"],["Goblet Squat",2,"12–15"],["Push-Ups / Machine Press",2,"8–15"],["Cable Row",2,"10–15"],["Plank",3,"30–60 sec"],["Dead Bug",2,"10–12 each"]]},
-Sunday:{title:"Recovery · Mobility & Easy Cardio",e:[["Treadmill Easy Walk",1,"20–30 min"],["Cycling / Elliptical",1,"15–20 min"],["Full-Body Mobility",1,"10–15 min"]]}
+  Monday:{
+    title:"Push · Chest, Shoulders & Triceps",
+    e:[
+      ["Chest Press",3,"8–12"],
+      ["Incline Chest Press",3,"8–12"],
+      ["Pec Deck / Chest Fly",2,"12–15"],
+      ["Shoulder Press",3,"8–12"],
+      ["Lateral Raise",3,"12–15"],
+      ["Tricep Pushdown",3,"10–15"],
+      ["Overhead Tricep Extension",2,"10–15"]
+    ]
+  },
+
+  Tuesday:{
+    title:"Pull · Back, Rear Delts & Biceps",
+    e:[
+      ["Lat Pulldown",3,"8–12"],
+      ["Seated Cable Row",3,"8–12"],
+      ["Chest-Supported Row",2,"10–12"],
+      ["Face Pull",2,"12–15"],
+      ["Dumbbell Bicep Curl",3,"10–12"],
+      ["Hammer Curl",2,"10–12"]
+    ]
+  },
+
+  Wednesday:{
+    title:"Core + Conditioning · Abs & Fitness",
+    e:[
+      ["Cable Crunch",3,"10–15"],
+      ["Hanging Knee Raise",3,"10–15"],
+      ["Plank",3,"30–60 sec"],
+      ["Dead Bug",2,"10–12 each"],
+      ["Treadmill Incline Walk",1,"20–30 min"],
+      ["Cycling / Elliptical",1,"15–20 min"]
+    ]
+  },
+
+  Thursday:{
+    title:"Upper Body · Chest, Back & Delts",
+    e:[
+      ["Machine Chest Press",3,"10–12"],
+      ["Incline Chest Press",2,"10–12"],
+      ["Lat Pulldown",3,"10–12"],
+      ["Seated Cable Row",3,"10–12"],
+      ["Lateral Raise",3,"12–15"],
+      ["Rear Delt Fly",2,"12–15"],
+      ["Tricep Pushdown",2,"10–15"],
+      ["Hammer Curl",2,"10–15"]
+    ]
+  },
+
+  Friday:{
+    title:"Lower Body · Light Legs + Core",
+    e:[
+      ["Leg Press",3,"10–12"],
+      ["Leg Extension",2,"12–15"],
+      ["Leg Curl",2,"12–15"],
+      ["Calf Raise",3,"12–20"],
+      ["Cable Crunch",3,"10–15"],
+      ["Plank",3,"30–60 sec"]
+    ]
+  },
+
+  Saturday:{
+    title:"Leg Day · Quads, Hamstrings, Glutes & Calves",
+    e:[
+      ["Leg Press",4,"8–12"],
+      ["Hack Squat / Leg Press",3,"8–12"],
+      ["Leg Extension",3,"10–15"],
+      ["Leg Curl",3,"10–15"],
+      ["Romanian Deadlift",3,"8–12"],
+      ["Hip Thrust / Glute Drive",3,"8–12"],
+      ["Calf Raise",4,"12–20"],
+      ["Hanging Knee Raise",3,"10–15"],
+      ["Cable Crunch",3,"10–15"]
+    ]
+  },
+
+  Sunday:{
+    title:"Recovery · Mobility & Easy Cardio",
+    e:[
+      ["Treadmill Easy Walk",1,"20–30 min"],
+      ["Cycling / Elliptical",1,"15–20 min"],
+      ["Full-Body Mobility",1,"10–15 min"]
+    ]
+  }
 };
 const weekdays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 let gymData={days:{}},gymDay=weekdays[(new Date().getDay()+6)%7];
